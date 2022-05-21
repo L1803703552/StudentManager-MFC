@@ -235,6 +235,7 @@
     <Image Include="res\Good.ico" />
     <Image Include="res\Info.ico" />
     <Image Include="res\Menu.ico" />
+    <Image Include="res\Screen.ico" />
     <Image Include="res\Setting.ico" />
     <Image Include="res\StudentManager-MFC.ico" />
     <Image Include="res\StudentManager-MFCDoc.ico" />

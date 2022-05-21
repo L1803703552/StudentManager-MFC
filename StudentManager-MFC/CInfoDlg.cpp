@@ -31,6 +31,7 @@ void CInfoDlg::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_list);
 	DDX_Text(pDX, IDC_EDIT1, m_edit);
+	DDX_Control(pDX, IDC_BUTTON7, m_btn);
 }
 
 BEGIN_MESSAGE_MAP(CInfoDlg, CFormView)
@@ -41,6 +42,8 @@ BEGIN_MESSAGE_MAP(CInfoDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CInfoDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON5, &CInfoDlg::OnBnClickedButton5)
 	ON_BN_CLICKED(IDC_BUTTON6, &CInfoDlg::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON7, &CInfoDlg::OnBnClickedButton7)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CInfoDlg::OnNMDblclkList1)
 END_MESSAGE_MAP()
 
 
@@ -80,6 +83,7 @@ void CInfoDlg::OnInitialUpdate()
 	//清空内容
 	m_list.DeleteAllItems();
 	CInfoFile file;
+	m_btn.EnableWindow(FALSE);
 	file.ReadDocline();
 	int i = 0;
 	CString str;
@@ -149,6 +153,7 @@ void CInfoDlg::OnLvnColumnclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 		m_list.SetItemData(i, i); // 每行的比较关键字，此处为列序号（点击的列号），可以设置为其他 比较函数的第一二个参数
 	m_list.SortItems(MyCompareProc, (DWORD_PTR)&m_list);//排序 第二个参数是比较函数的第三个参数
 	method = !method;
+	autoSave();
 	*pResult = 0;
 }
 
@@ -160,6 +165,7 @@ void CInfoDlg::OnBnClickedButton1()
 	CInfoAddDlg dlg;
 	dlg.getListCtrl(&m_list);
 	dlg.DoModal();
+	autoSave();
 }
 
 
@@ -186,6 +192,7 @@ void CInfoDlg::OnBnClickedButton2()
 		int iSel = arDelItem[i];
 		m_list.DeleteItem(iSel);
 	}
+	autoSave();
 	MessageBox(TEXT("已删除"), TEXT("提示"), MB_ICONASTERISK);
 }
 
@@ -203,6 +210,7 @@ void CInfoDlg::OnBnClickedButton3()
 	CInfoReviseDlg dlg;
 	dlg.getListCtrl(&m_list);
 	dlg.DoModal();
+	autoSave();
 }
 
 
@@ -234,12 +242,14 @@ void CInfoDlg::OnBnClickedButton4()
 		ofs.close();
 		MessageBox(_T("导出成功！"), _T("提示"), MB_ICONINFORMATION);
 	}
+	autoSave();
 }
 
 
 void CInfoDlg::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	// 搜索
 	UpdateData(TRUE);
 	if (m_edit.IsEmpty())
 	{
@@ -247,50 +257,25 @@ void CInfoDlg::OnBnClickedButton5()
 		return;
 	}
 	list<msg> list_temp;
-	CString str;
-	msg tmp;
-	int num = m_list.GetItemCount();
-	int i, j;
-	list_bak.clear();
 	list_temp.clear();
-	for (i = 0; i < num; i++)
+	// 查找
+	for (list<msg>::iterator it = list_bak.begin(); it!=list_bak.end(); it++)
 	{
-		str = m_list.GetItemText(i, 0);
-		tmp.id = CStringA(str);
-		str = m_list.GetItemText(i, 1);
-		tmp.name = CStringA(str);
-		str = m_list.GetItemText(i, 2);
-		tmp.sub1 = _ttoi(str);
-		str = m_list.GetItemText(i, 3);
-		tmp.sub2 = _ttoi(str);
-		list_bak.push_back(tmp);
-	}
-	for (i = 0; i < num; i++)
-	{
-		for (j = 0; j < 2; j++)
+		if (m_edit == (CString)it->id.c_str()|| m_edit == (CString)it->name.c_str())
 		{
-			if (m_edit == m_list.GetItemText(i, j))
-			{
-				str = m_list.GetItemText(i, 0);
-				tmp.id = CStringA(str);
-				str = m_list.GetItemText(i, 1);
-				tmp.name = CStringA(str);
-				str = m_list.GetItemText(i, 2);
-				tmp.sub1 = _ttoi(str);
-				str = m_list.GetItemText(i, 3);
-				tmp.sub2 = _ttoi(str);
-				list_temp.push_back(tmp);
-				break;
-			}
+			list_temp.push_back(*it);
 		}
 	}
+	// 未找到
 	if (list_temp.size() == 0)
 	{
 		MessageBox(_T("搜索无结果！"), _T("警告"), MB_ICONWARNING);
 		return;
 	}
+	// 将结果刷在控件上
 	m_list.DeleteAllItems();
-	i = 0;
+	int i = 0;
+	CString str;
 	for (list<msg>::iterator it = list_temp.begin(); it != list_temp.end(); it++)
 	{
 		m_list.InsertItem(i, (CString)it->id.c_str());
@@ -308,19 +293,59 @@ void CInfoDlg::OnBnClickedButton5()
 	}
 	str.Format(_T("共搜索到%d个结果"), i);
 	MessageBox(str);
+	m_btn.EnableWindow(TRUE);
+	UpdateData(FALSE);
 }
 
 
 void CInfoDlg::OnBnClickedButton6()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	// 保存
 	CInfoFile file;
-	int num = m_list.GetItemCount();
-	int i;
+	file.ls = list_bak;
+	file.WirteDocline();
+	MessageBox(_T("保存成功！"), _T("提示"), MB_ICONINFORMATION);
+	autoSave();
+}
+
+
+void CInfoDlg::OnBnClickedButton7()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// 重置
+	UpdateData(TRUE);
+	m_list.DeleteAllItems();
+	int i = 0;
+	CString str;
+	for (list<msg>::iterator it = list_bak.begin(); it != list_bak.end(); it++)
+	{
+		m_list.InsertItem(i, (CString)it->id.c_str());
+		int column = 1;
+		m_list.SetItemText(i, column++, (CString)it->name.c_str());
+		str.Format(_T("%d"), it->sub1);
+		m_list.SetItemText(i, column++, str);
+		str.Format(_T("%d"), it->sub2);
+		m_list.SetItemText(i, column++, str);
+		str.Format(_T("%.1f"), 1.0 * (it->sub1 + it->sub2) / 2);
+		m_list.SetItemText(i, column++, str);
+		str.Format(_T("%d"), it->sub1 + it->sub2);
+		m_list.SetItemText(i, column++, str);
+		i++;
+	}
+	m_btn.EnableWindow(FALSE);
+	UpdateData(FALSE);
+}
+
+void CInfoDlg::autoSave()
+{
+	// 自动保存
+	UpdateData(TRUE);
 	CString str;
 	msg tmp;
-	file.ls.clear();
-	for (i = 0; i < num; i++)
+	list_bak.clear();
+	int num = m_list.GetItemCount();
+	for (int i = 0; i < num; i++)
 	{
 		str = m_list.GetItemText(i, 0);
 		tmp.id = CStringA(str);
@@ -330,8 +355,15 @@ void CInfoDlg::OnBnClickedButton6()
 		tmp.sub1 = _ttoi(str);
 		str = m_list.GetItemText(i, 3);
 		tmp.sub2 = _ttoi(str);
-		file.ls.push_back(tmp);
+		list_bak.push_back(tmp);
 	}
-	file.WirteDocline();
-	MessageBox(_T("保存成功！"), _T("提示"), MB_ICONINFORMATION);
+}
+
+
+void CInfoDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	OnBnClickedButton3();
+	*pResult = 0;
 }

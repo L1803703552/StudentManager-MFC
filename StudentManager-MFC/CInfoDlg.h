@@ -36,12 +36,16 @@ public:
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButton5();
+	afx_msg void OnBnClickedButton6();
+	afx_msg void OnBnClickedButton7();
 private:
 	CString m_edit;
 	CListCtrl m_list;
 	list<msg> list_bak;
+	CButton m_btn;
+	void autoSave();
 public:
-	afx_msg void OnBnClickedButton6();
+	afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
 };
 
 
