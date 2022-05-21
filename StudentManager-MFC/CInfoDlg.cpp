@@ -4,7 +4,6 @@
 #include "pch.h"
 #include "StudentManager-MFC.h"
 #include "CInfoDlg.h"
-#include "InfoFile.h"
 #include <iomanip>
 #include "CInfoAddDlg.h"
 #include "CInfoReviseDlg.h"
@@ -241,11 +240,74 @@ void CInfoDlg::OnBnClickedButton4()
 void CInfoDlg::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
 	if (m_edit.IsEmpty())
 	{
 		MessageBox(_T("请输入要搜索学生的学号或姓名！"), _T("警告"), MB_ICONWARNING);
 		return;
 	}
+	list<msg> list_temp;
+	CString str;
+	msg tmp;
+	int num = m_list.GetItemCount();
+	int i, j;
+	list_bak.clear();
+	list_temp.clear();
+	for (i = 0; i < num; i++)
+	{
+		str = m_list.GetItemText(i, 0);
+		tmp.id = CStringA(str);
+		str = m_list.GetItemText(i, 1);
+		tmp.name = CStringA(str);
+		str = m_list.GetItemText(i, 2);
+		tmp.sub1 = _ttoi(str);
+		str = m_list.GetItemText(i, 3);
+		tmp.sub2 = _ttoi(str);
+		list_bak.push_back(tmp);
+	}
+	for (i = 0; i < num; i++)
+	{
+		for (j = 0; j < 2; j++)
+		{
+			if (m_edit == m_list.GetItemText(i, j))
+			{
+				str = m_list.GetItemText(i, 0);
+				tmp.id = CStringA(str);
+				str = m_list.GetItemText(i, 1);
+				tmp.name = CStringA(str);
+				str = m_list.GetItemText(i, 2);
+				tmp.sub1 = _ttoi(str);
+				str = m_list.GetItemText(i, 3);
+				tmp.sub2 = _ttoi(str);
+				list_temp.push_back(tmp);
+				break;
+			}
+		}
+	}
+	if (list_temp.size() == 0)
+	{
+		MessageBox(_T("搜索无结果！"), _T("警告"), MB_ICONWARNING);
+		return;
+	}
+	m_list.DeleteAllItems();
+	i = 0;
+	for (list<msg>::iterator it = list_temp.begin(); it != list_temp.end(); it++)
+	{
+		m_list.InsertItem(i, (CString)it->id.c_str());
+		int column = 1;
+		m_list.SetItemText(i, column++, (CString)it->name.c_str());
+		str.Format(_T("%d"), it->sub1);
+		m_list.SetItemText(i, column++, str);
+		str.Format(_T("%d"), it->sub2);
+		m_list.SetItemText(i, column++, str);
+		str.Format(_T("%.1f"), 1.0*(it->sub1 + it->sub2) / 2);
+		m_list.SetItemText(i, column++, str);
+		str.Format(_T("%d"), it->sub1 + it->sub2);
+		m_list.SetItemText(i, column++, str);
+		i++;
+	}
+	str.Format(_T("共搜索到%d个结果"), i);
+	MessageBox(str);
 }
 
 
@@ -261,7 +323,6 @@ void CInfoDlg::OnBnClickedButton6()
 	for (i = 0; i < num; i++)
 	{
 		str = m_list.GetItemText(i, 0);
-		//MessageBox(str);
 		tmp.id = CStringA(str);
 		str = m_list.GetItemText(i, 1);
 		tmp.name = CStringA(str);

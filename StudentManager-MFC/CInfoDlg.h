@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <afxcview.h>
+#include "InfoFile.h"
 
 // CInfoDlg 窗体视图
 
@@ -38,6 +39,7 @@ public:
 private:
 	CString m_edit;
 	CListCtrl m_list;
+	list<msg> list_bak;
 public:
 	afx_msg void OnBnClickedButton6();
 };
