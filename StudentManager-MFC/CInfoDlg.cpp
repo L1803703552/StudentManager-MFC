@@ -181,7 +181,7 @@ void CInfoDlg::OnBnClickedButton2()
 		CurSel = m_list.GetNextItem(CurSel, LVNI_ALL | LVNI_SELECTED);
 	}
 	//一定要从后向前删
-	for (int i = arDelItem.GetUpperBound(); i >= 0; i--)
+	for (int i = (int)arDelItem.GetUpperBound(); i >= 0; i--)
 	{
 		int iSel = arDelItem[i];
 		m_list.DeleteItem(iSel);
@@ -316,7 +316,7 @@ void CInfoDlg::OnBnClickedButton6()
 	// TODO: 在此添加控件通知处理程序代码
 	CInfoFile file;
 	int num = m_list.GetItemCount();
-	int i, j;
+	int i;
 	CString str;
 	msg tmp;
 	file.ls.clear();

@@ -23,7 +23,7 @@
     <ProjectGuid>{2AC09BE1-9136-4723-8417-EB69C9470426}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
     <RootNamespace>StudentManagerMFC</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <ProjectName>StudentManager-MFC</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -234,6 +234,7 @@
   <ItemGroup>
     <Image Include="res\Good.ico" />
     <Image Include="res\Info.ico" />
+    <Image Include="res\Menu.ico" />
     <Image Include="res\Setting.ico" />
     <Image Include="res\StudentManager-MFC.ico" />
     <Image Include="res\StudentManager-MFCDoc.ico" />
