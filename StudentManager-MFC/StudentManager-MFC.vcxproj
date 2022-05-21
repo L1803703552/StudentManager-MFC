@@ -232,10 +232,6 @@
     <None Include="res\StudentManagerMFC.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="images\Good.ico" />
-    <Image Include="images\Info.ico" />
-    <Image Include="images\Setting.ico" />
-    <Image Include="images\Welcome.ico" />
     <Image Include="res\Good.ico" />
     <Image Include="res\Info.ico" />
     <Image Include="res\Setting.ico" />

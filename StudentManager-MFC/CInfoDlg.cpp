@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CInfoDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON2, &CInfoDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON1, &CInfoDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON5, &CInfoDlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &CInfoDlg::OnBnClickedButton6)
 END_MESSAGE_MAP()
 
 
@@ -232,13 +233,44 @@ void CInfoDlg::OnBnClickedButton4()
 			ofs << endl;
 		}
 		ofs.close();
-		MessageBox(_T("保存成功！"), _T("提示"), MB_ICONINFORMATION);
+		MessageBox(_T("导出成功！"), _T("提示"), MB_ICONINFORMATION);
 	}
 }
-
 
 
 void CInfoDlg::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_edit.IsEmpty())
+	{
+		MessageBox(_T("请输入要搜索学生的学号或姓名！"), _T("警告"), MB_ICONWARNING);
+		return;
+	}
+}
+
+
+void CInfoDlg::OnBnClickedButton6()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CInfoFile file;
+	int num = m_list.GetItemCount();
+	int i, j;
+	CString str;
+	msg tmp;
+	file.ls.clear();
+	for (i = 0; i < num; i++)
+	{
+		str = m_list.GetItemText(i, 0);
+		//MessageBox(str);
+		tmp.id = CStringA(str);
+		str = m_list.GetItemText(i, 1);
+		tmp.name = CStringA(str);
+		str = m_list.GetItemText(i, 2);
+		tmp.sub1 = _ttoi(str);
+		str = m_list.GetItemText(i, 3);
+		tmp.sub2 = _ttoi(str);
+		file.ls.push_back(tmp);
+	}
+	file.WirteDocline();
+	MessageBox(_T("保存成功！"), _T("提示"), MB_ICONINFORMATION);
 }

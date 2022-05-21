@@ -134,18 +134,6 @@
     <Image Include="res\StudentManager-MFC.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="images\Good.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="images\Info.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="images\Welcome.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="images\Setting.ico">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\Good.ico">
       <Filter>资源文件</Filter>
     </Image>

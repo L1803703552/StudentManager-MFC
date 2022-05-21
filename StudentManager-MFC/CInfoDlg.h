@@ -27,8 +27,6 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
-private:
-	CListCtrl m_list;
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnLvnColumnclickList1(NMHDR* pNMHDR, LRESULT* pResult);
@@ -39,6 +37,9 @@ public:
 	afx_msg void OnBnClickedButton5();
 private:
 	CString m_edit;
+	CListCtrl m_list;
+public:
+	afx_msg void OnBnClickedButton6();
 };
 
 

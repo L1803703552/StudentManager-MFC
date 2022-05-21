@@ -39,7 +39,6 @@ public:
 	// 添加学生信息
 	void Addline(CString id,CString name, int sub1, int sub2);
 
-	list<msg> ls;	//存储容器
-	int num;			//用来记录学生个数
+	list<msg> ls;	//存储链表
 };
 

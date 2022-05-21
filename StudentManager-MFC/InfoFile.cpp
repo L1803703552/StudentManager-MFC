@@ -40,13 +40,12 @@ void CInfoFile::WritePwd(char* name, char* pwd)
 	ofs.close();	//关闭文件
 }
 
-//读取商品信息
+//读取学生信息
 void CInfoFile::ReadDocline()
 {
 	ifstream ifs(_F_STOCK); //输入方式打开文件
 
 	char buf[1024] = { 0 };
-	num = 0;	//初始化商品数目为0
 	ls.clear();
 	//取出表头
 	ifs.getline(buf, sizeof(buf));
@@ -56,7 +55,6 @@ void CInfoFile::ReadDocline()
 		msg tmp;
 
 		ifs.getline(buf, sizeof(buf)); //读取一行
-		num++;	//商品数目加一
 
 		// AfxMessageBox(CString(buf));
 		char *sst = strtok(buf, ","); //以“,”切割
@@ -84,12 +82,12 @@ void CInfoFile::ReadDocline()
 	ifs.close(); //关闭文件
 }
 
-//商品写入文件
+//写入文件
 void CInfoFile::WirteDocline()
 {
 	ofstream ofs(_F_STOCK);//输出方式打开文件
 
-	if (ls.size() > 0)	//商品链表有内容才执行
+	if (ls.size() > 0)	//学生链表有内容才执行
 	{
 		ofs << "学号,姓名,学科1,学科2" << endl; //写入表头
 
@@ -106,8 +104,8 @@ void CInfoFile::WirteDocline()
 	ofs.close();//关闭文件
 }
 
-//添加新商品
-//name:商品名称，num：库存，price：价格
+// 添加学生
+// id:学号，name:姓名，sub1:成绩1，sub2:成绩2
 void CInfoFile::Addline(CString id, CString name, int sub1, int sub2)
 {
 	msg tmp;
@@ -115,7 +113,7 @@ void CInfoFile::Addline(CString id, CString name, int sub1, int sub2)
 	if (ls.size() > 0)
 	{
 		//学号、姓名、数量有效
-		if (!name.IsEmpty() && num > 0 && !id.IsEmpty())
+		if (!name.IsEmpty() && !id.IsEmpty())
 		{
 			CStringA str;
 			str = id;
@@ -127,6 +125,5 @@ void CInfoFile::Addline(CString id, CString name, int sub1, int sub2)
 
 			ls.push_back(tmp);	//放在链表的后面
 		}
-		num++;
 	}
 }
