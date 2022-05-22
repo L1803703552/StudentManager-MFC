@@ -40,6 +40,11 @@ private:
 	CSplitterWnd m_spliter;
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+public:
+	CStatusBar* MainFrameGetStBar()
+	{
+		return &m_wndStatusBar;
+	}
 };
 
 

@@ -40,6 +40,7 @@ protected:
 // 生成的消息映射函数
 protected:
 	DECLARE_MESSAGE_MAP()
+
 };
 
 #ifndef _DEBUG  // StudentManager-MFCView.cpp 中的调试版本

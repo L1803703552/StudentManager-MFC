@@ -2,6 +2,8 @@
 
 #include <afxcview.h>
 #include "InfoFile.h"
+#include "CDimEditCtrl.h"
+#include "MainFrm.h"
 
 // CInfoDlg 窗体视图
 
@@ -38,14 +40,18 @@ public:
 	afx_msg void OnBnClickedButton5();
 	afx_msg void OnBnClickedButton6();
 	afx_msg void OnBnClickedButton7();
+	afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
 private:
-	CString m_edit;
 	CListCtrl m_list;
 	list<msg> list_bak;
 	CButton m_btn;
 	void autoSave();
-public:
-	afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
+	CString m_edit;
+	// 文本框控件
+	CDimEditCtrl m_EditCtrl;
+	CStatusBar* m_status_bar;
+	// 设置状态栏
+	void SetStatusBarText(CString in);
 };
 
 

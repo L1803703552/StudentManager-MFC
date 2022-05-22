@@ -30,8 +30,9 @@ void CInfoDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_list);
-	DDX_Text(pDX, IDC_EDIT1, m_edit);
 	DDX_Control(pDX, IDC_BUTTON7, m_btn);
+	DDX_Text(pDX, IDC_EDIT1, m_edit);
+	DDX_Control(pDX, IDC_EDIT1, m_EditCtrl);
 }
 
 BEGIN_MESSAGE_MAP(CInfoDlg, CFormView)
@@ -72,6 +73,9 @@ void CInfoDlg::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: 在此添加专用代码和/或调用基类
+	// 状态栏设置
+	m_status_bar = ((CMainFrame*)AfxGetMainWnd())->MainFrameGetStBar();
+	SetStatusBarText(_T("就绪"));
 	// 添加表头
 	m_list.SetExtendedStyle(m_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	// 初始化表头
@@ -82,9 +86,10 @@ void CInfoDlg::OnInitialUpdate()
 	}
 	//清空内容
 	m_list.DeleteAllItems();
-	CInfoFile file;
 	m_btn.EnableWindow(FALSE);
+	CInfoFile file;
 	file.ReadDocline();
+	m_EditCtrl.SetDimText(_T("请输入关键词"));
 	int i = 0;
 	CString str;
 	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
@@ -102,6 +107,7 @@ void CInfoDlg::OnInitialUpdate()
 		m_list.SetItemText(i, column++, str);
 		i++;
 	}
+
 	autoSave();
 
 }
@@ -167,6 +173,7 @@ void CInfoDlg::OnBnClickedButton1()
 	CInfoAddDlg dlg;
 	dlg.getData(&list_bak, &m_list);
 	dlg.DoModal();
+	SetStatusBarText(_T("就绪"));
 }
 
 
@@ -175,9 +182,17 @@ void CInfoDlg::OnBnClickedButton2()
 	// TODO: 在此添加控件通知处理程序代码
 	// 删除选中
 	UpdateData(TRUE);
+	int n = m_list.GetSelectedCount();
+	if (n < 1)
+	{
+		MessageBox(TEXT("请选择要删除的数据！"), TEXT("警告"), MB_ICONWARNING);
+		SetStatusBarText(_T("就绪"));
+		return;
+	}
 	UINT flag = MessageBox(TEXT("确认删除？"), TEXT("提示"), MB_YESNO | MB_ICONQUESTION);
 	if (flag == IDNO) 
 	{
+		SetStatusBarText(_T("就绪"));
 		return;
 	}
 	CUIntArray arDelItem;
@@ -205,7 +220,8 @@ void CInfoDlg::OnBnClickedButton2()
 
 	}
 	UpdateData(FALSE);
-	MessageBox(TEXT("已删除"), TEXT("提示"), MB_ICONASTERISK);
+	str.Format(_T("成功删除%d个对象"), (int)arDelItem.GetUpperBound()+1);
+	SetStatusBarText(str);
 }
 
 
@@ -217,11 +233,13 @@ void CInfoDlg::OnBnClickedButton3()
 	if (n != 1)
 	{
 		MessageBox(TEXT("请选择一行数据！"), TEXT("警告"), MB_ICONWARNING);
+		SetStatusBarText(_T("就绪"));
 		return;
 	}
 	CInfoReviseDlg dlg;
 	dlg.getData(&list_bak, &m_list);
 	dlg.DoModal();
+	SetStatusBarText(_T("就绪"));
 }
 
 
@@ -253,6 +271,7 @@ void CInfoDlg::OnBnClickedButton4()
 		ofs.close();
 		MessageBox(_T("导出成功，\n请注意：导出的信息以列表显示的为准！"), _T("提示"), MB_ICONINFORMATION);
 	}
+	SetStatusBarText(_T("就绪"));
 }
 
 
@@ -304,7 +323,7 @@ void CInfoDlg::OnBnClickedButton5()
 		i++;
 	}
 	str.Format(_T("共搜索到%d个结果"), i);
-	MessageBox(str);
+	SetStatusBarText(str);
 	m_btn.EnableWindow(TRUE);
 	UpdateData(FALSE);
 }
@@ -317,7 +336,7 @@ void CInfoDlg::OnBnClickedButton6()
 	CInfoFile file;
 	file.ls = list_bak;
 	file.WirteDocline();
-	MessageBox(_T("保存成功！"), _T("提示"), MB_ICONINFORMATION);
+	SetStatusBarText(_T("保存成功"));
 	autoSave();
 }
 
@@ -346,6 +365,7 @@ void CInfoDlg::OnBnClickedButton7()
 		i++;
 	}
 	m_btn.EnableWindow(FALSE);
+	SetStatusBarText(_T("就绪"));
 	UpdateData(FALSE);
 }
 
@@ -371,6 +391,12 @@ void CInfoDlg::autoSave()
 	}
 }
 
+
+void CInfoDlg::SetStatusBarText(CString in)
+{
+	// 设置状态栏
+	m_status_bar->SetPaneText(0, in);
+}
 
 void CInfoDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {

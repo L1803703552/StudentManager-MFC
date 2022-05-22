@@ -69,6 +69,9 @@
     <ClInclude Include="CInfoReviseDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CDimEditCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StudentManager-MFC.cpp">
@@ -114,6 +117,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CInfoReviseDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CDimEditCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -184,6 +184,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CDimEditCtrl.h" />
     <ClInclude Include="CDispalyView.h" />
     <ClInclude Include="CGoodDlg.h" />
     <ClInclude Include="CInfoAddDlg.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDimEditCtrl.cpp" />
     <ClCompile Include="CDispalyView.cpp" />
     <ClCompile Include="CGoodDlg.cpp" />
     <ClCompile Include="CInfoAddDlg.cpp" />
