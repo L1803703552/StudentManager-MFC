@@ -2,7 +2,7 @@
 
 
 // CInfoAddDlg 对话框
-
+#include "InfoFile.h"
 class CInfoAddDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CInfoAddDlg)
@@ -26,11 +26,12 @@ private:
 	CString m_name;
 	int m_sub1;
 	int m_sub2;
-	CListCtrl *m_list;
+	list<msg> *list_bak;
+	CListCtrl* m_list;
 public:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedOk();
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
-	void getListCtrl(CListCtrl *list);
+	void getData(list<msg>* ls, CListCtrl* lst);
 };

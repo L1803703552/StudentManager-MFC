@@ -102,6 +102,7 @@ void CInfoDlg::OnInitialUpdate()
 		m_list.SetItemText(i, column++, str);
 		i++;
 	}
+	autoSave();
 
 }
 static int CALLBACK MyCompareProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
@@ -147,6 +148,7 @@ void CInfoDlg::OnLvnColumnclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO:  在此添加控件通知处理程序代码
+	// 点击表头排序
 	sort_column = pNMLV->iSubItem;//点击的列
 	int count = m_list.GetItemCount();//m_list是你控件的名字
 	for (int i = 0; i < count; i++)
@@ -163,9 +165,8 @@ void CInfoDlg::OnBnClickedButton1()
 	// TODO: 在此添加控件通知处理程序代码
 	// 添加信息
 	CInfoAddDlg dlg;
-	dlg.getListCtrl(&m_list);
+	dlg.getData(&list_bak, &m_list);
 	dlg.DoModal();
-	autoSave();
 }
 
 
@@ -173,7 +174,7 @@ void CInfoDlg::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 删除选中
-
+	UpdateData(TRUE);
 	UINT flag = MessageBox(TEXT("确认删除？"), TEXT("提示"), MB_YESNO | MB_ICONQUESTION);
 	if (flag == IDNO) 
 	{
@@ -187,12 +188,23 @@ void CInfoDlg::OnBnClickedButton2()
 		CurSel = m_list.GetNextItem(CurSel, LVNI_ALL | LVNI_SELECTED);
 	}
 	//一定要从后向前删
+	CString str;
 	for (int i = (int)arDelItem.GetUpperBound(); i >= 0; i--)
 	{
 		int iSel = arDelItem[i];
+		str = m_list.GetItemText(iSel, 0);
+		for (list<msg>::iterator it = list_bak.begin(); it != list_bak.end(); it++)
+		{
+			if (str == (CString)it->id.c_str())
+			{
+				list_bak.erase(it);
+				break;
+			}
+		}
 		m_list.DeleteItem(iSel);
+
 	}
-	autoSave();
+	UpdateData(FALSE);
 	MessageBox(TEXT("已删除"), TEXT("提示"), MB_ICONASTERISK);
 }
 
@@ -208,9 +220,8 @@ void CInfoDlg::OnBnClickedButton3()
 		return;
 	}
 	CInfoReviseDlg dlg;
-	dlg.getListCtrl(&m_list);
+	dlg.getData(&list_bak, &m_list);
 	dlg.DoModal();
-	autoSave();
 }
 
 
@@ -240,9 +251,8 @@ void CInfoDlg::OnBnClickedButton4()
 			ofs << endl;
 		}
 		ofs.close();
-		MessageBox(_T("导出成功！"), _T("提示"), MB_ICONINFORMATION);
+		MessageBox(_T("导出成功，\n请注意：导出的信息以列表显示的为准！"), _T("提示"), MB_ICONINFORMATION);
 	}
-	autoSave();
 }
 
 
@@ -259,9 +269,11 @@ void CInfoDlg::OnBnClickedButton5()
 	list<msg> list_temp;
 	list_temp.clear();
 	// 查找
+	string tmp;
 	for (list<msg>::iterator it = list_bak.begin(); it!=list_bak.end(); it++)
 	{
-		if (m_edit == (CString)it->id.c_str()|| m_edit == (CString)it->name.c_str())
+		tmp = CStringA(m_edit);
+		if (it->id.find(tmp) != -1 || it->name.find(tmp) != -1)
 		{
 			list_temp.push_back(*it);
 		}
@@ -364,6 +376,7 @@ void CInfoDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
+	// 双击列表事件
 	OnBnClickedButton3();
 	*pResult = 0;
 }

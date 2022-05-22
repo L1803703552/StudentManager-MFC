@@ -66,7 +66,7 @@ void CSelectView::OnInitialUpdate()
 
 	//树控件设置节点 CTreeCtrl::InsertItem
 	m_treeCtrl->InsertItem(TEXT("欢迎界面"), 0, 0, NULL);
-	m_treeCtrl->InsertItem(TEXT("学生管理"), 1, 1, NULL);
+	m_treeCtrl->InsertItem(TEXT("成绩管理"), 1, 1, NULL);
 	m_treeCtrl->InsertItem(TEXT("优秀学生"), 2, 2, NULL);
 	m_treeCtrl->InsertItem(TEXT("系统设置"), 3, 3, NULL);
 }
@@ -95,7 +95,7 @@ void CSelectView::OnTvnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 		//(LPARAM)0：指定了附加的消息信息，此参数这里没有意义
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_A, (WPARAM)NM_A, (LPARAM)0);
 	}
-	else if (str == TEXT("学生管理"))
+	else if (str == TEXT("成绩管理"))
 	{
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_B, (WPARAM)NM_B, (LPARAM)0);
 	}

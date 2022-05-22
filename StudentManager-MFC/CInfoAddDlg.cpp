@@ -58,7 +58,21 @@ void CInfoAddDlg::OnBnClickedOk()
 		MessageBox(_T("请输入姓名！"));
 		return;
 	}
+	for (list<msg>::iterator it = list_bak->begin(); it != list_bak->end(); it++)
+	{
+		if (m_id == (CString)it->id.c_str())
+		{
+			MessageBox(TEXT("该学号已存在！"), TEXT("警告"), MB_ICONWARNING);
+			return;
+		}
+	}
 	CString str;
+	msg tmp;
+	tmp.id = CStringA(m_id);
+	tmp.name = CStringA(m_name);
+	tmp.sub1 = m_sub1;
+	tmp.sub2 = m_sub2;
+	list_bak->push_back(tmp);
 	int n = m_list->GetItemCount(), c = 1;;
 	m_list->InsertItem(n, m_id);
 	m_list->SetItemText(n, c++, m_name);
@@ -104,7 +118,8 @@ BOOL CInfoAddDlg::OnInitDialog()
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
-void CInfoAddDlg::getListCtrl(CListCtrl* list)
+void CInfoAddDlg::getData(list<msg>* ls, CListCtrl* lst)
 {
-	m_list = list;
+	list_bak = ls;
+	m_list = lst;
 }

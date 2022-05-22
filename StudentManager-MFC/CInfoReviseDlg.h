@@ -25,6 +25,7 @@ private:
 	CString m_name;
 	int m_sub1;
 	int m_sub2;
+	list<msg>* list_bak;
 	CListCtrl* m_list;
 
 public:
@@ -33,4 +34,5 @@ public:
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	void getListCtrl(CListCtrl* list);
+	void getData(list<msg>* ls, CListCtrl* lst);
 };

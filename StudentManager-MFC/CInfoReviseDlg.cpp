@@ -77,15 +77,20 @@ void CInfoReviseDlg::OnBnClickedOk()
 	int row;
 	POSITION pos = m_list->GetFirstSelectedItemPosition();
 	row = (int)m_list->GetNextSelectedItem(pos);
-	if (m_id.IsEmpty())
-	{
-		MessageBox(_T("请输入学号！"));
-		return;
-	}
 	if (m_name.IsEmpty())
 	{
 		MessageBox(_T("请输入姓名！"));
 		return;
+	}
+	for (list<msg>::iterator it = list_bak->begin(); it != list_bak->end(); it++)
+	{
+		if (m_id == (CString)it->id.c_str())
+		{
+			it->name = CStringA(m_name);
+			it->sub1 = m_sub1;
+			it->sub2 = m_sub2;
+			break;
+		}
 	}
 	int c = 0;
 	m_list->SetItemText(row, c++, m_id);
@@ -118,7 +123,8 @@ void CInfoReviseDlg::OnOK()
 }
 
 
-void CInfoReviseDlg::getListCtrl(CListCtrl* list)
+void CInfoReviseDlg::getData(list<msg>* ls, CListCtrl* lst)
 {
-	m_list = list;
+	list_bak = ls;
+	m_list = lst;
 }
