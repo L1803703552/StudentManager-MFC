@@ -24,9 +24,11 @@ void CWelcomeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TEXT, m_statictext);
+	DDX_Control(pDX, IDC_TEXT2, m_text2);
 }
 
 BEGIN_MESSAGE_MAP(CWelcomeDlg, CFormView)
+	ON_STN_CLICKED(IDC_LINK, &CWelcomeDlg::OnStnClickedLink)
 END_MESSAGE_MAP()
 
 
@@ -54,6 +56,17 @@ void CWelcomeDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 	// TODO: 在此添加专用代码和/或调用基类
-	m_font.CreateFont(20, 0, 0, 0, FW_NORMAL, 1, 1, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, _T("黑体"));
-	m_statictext.SetFont(&m_font);
+	CFont m_font1,m_font2;
+	m_font1.CreateFont(20, 0, 0, 0, FW_NORMAL, 1, 1, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, _T("黑体"));
+	m_statictext.SetFont(&m_font1);
+	m_font2.CreatePointFont(110, _T("黑体"));
+	m_text2.SetFont(&m_font2);
+
+}
+
+
+void CWelcomeDlg::OnStnClickedLink()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	ShellExecute(NULL, NULL, TEXT("https://github.com/L1803703552/StudentManager-MFC.git"), NULL, NULL, SW_SHOWNORMAL);
 }

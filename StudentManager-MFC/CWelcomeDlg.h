@@ -28,10 +28,12 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
-	CFont m_font;
 	CStatic m_statictext;
 public:
 	virtual void OnInitialUpdate();
+	afx_msg void OnStnClickedLink();
+private:
+	CStatic m_text2;
 };
 
 
