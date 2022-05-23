@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "StudentManager-MFC.h"
 #include "CGoodDlg.h"
+#include <algorithm>
 
 
 // CGoodDlg
@@ -48,7 +49,13 @@ void CGoodDlg::Dump(CDumpContext& dc) const
 
 
 // CGoodDlg 消息处理程序
-
+bool cmp(msg a, msg b)
+{
+	int suma, sumb;
+	suma = a.sub1 + a.sub2;
+	sumb = b.sub1 + b.sub2;
+	return suma > sumb;
+}
 
 void CGoodDlg::OnInitialUpdate()
 {
@@ -58,4 +65,9 @@ void CGoodDlg::OnInitialUpdate()
 	CFont m_font1;
 	m_font1.CreatePointFont(200, _T("隶书"));
 	m_text1.SetFont(&m_font1);
+	CInfoFile file;
+	file.ReadDocline();
+	list<msg> list_data;
+	list_data = file.ls;
+	list_data.sort(cmp);
 }

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-
+#include "InfoFile.h"
 
 // CGoodDlg 窗体视图
 
