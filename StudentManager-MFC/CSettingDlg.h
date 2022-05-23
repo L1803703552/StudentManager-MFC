@@ -27,6 +27,23 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButton2();
+private:
+	CString m_name;
+	CString m_new_pwd;
+	CString m_sure_pwd;
+public:
+	virtual void OnInitialUpdate();
+private:
+	CString m_pwd;
+public:
+	afx_msg void OnBnClickedButton3();
+private:
+	CStatic m_text1;
+	CStatic m_text2;
+public:
+	afx_msg void OnBnClickedButton4();
 };
 
 
