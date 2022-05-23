@@ -23,6 +23,7 @@ CGoodDlg::~CGoodDlg()
 void CGoodDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_TEXT1, m_text1);
 }
 
 BEGIN_MESSAGE_MAP(CGoodDlg, CFormView)
@@ -47,3 +48,14 @@ void CGoodDlg::Dump(CDumpContext& dc) const
 
 
 // CGoodDlg 消息处理程序
+
+
+void CGoodDlg::OnInitialUpdate()
+{
+	CFormView::OnInitialUpdate();
+
+	// TODO: 在此添加专用代码和/或调用基类
+	CFont m_font1;
+	m_font1.CreatePointFont(200, _T("隶书"));
+	m_text1.SetFont(&m_font1);
+}

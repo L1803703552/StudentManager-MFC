@@ -27,6 +27,11 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual void OnInitialUpdate();
+private:
+	// 标题文本
+	CStatic m_text1;
 };
 
 

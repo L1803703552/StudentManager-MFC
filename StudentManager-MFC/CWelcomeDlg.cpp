@@ -28,7 +28,6 @@ void CWelcomeDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CWelcomeDlg, CFormView)
-	ON_STN_CLICKED(IDC_LINK, &CWelcomeDlg::OnStnClickedLink)
 END_MESSAGE_MAP()
 
 
@@ -64,9 +63,3 @@ void CWelcomeDlg::OnInitialUpdate()
 
 }
 
-
-void CWelcomeDlg::OnStnClickedLink()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	ShellExecute(NULL, NULL, TEXT("https://github.com/L1803703552/StudentManager-MFC.git"), NULL, NULL, SW_SHOWNORMAL);
-}

@@ -29,11 +29,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	CStatic m_statictext;
+	CStatic m_text2;
 public:
 	virtual void OnInitialUpdate();
-	afx_msg void OnStnClickedLink();
-private:
-	CStatic m_text2;
 };
 
 
