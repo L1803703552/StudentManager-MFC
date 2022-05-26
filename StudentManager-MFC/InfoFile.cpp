@@ -4,6 +4,24 @@
 
 CInfoFile::CInfoFile()
 {
+	ifstream ifs; //创建文件输入对象
+	ifs.open(_F_LOGIN); //打开文件
+
+	char buf[1024] = { 0 };
+
+	ifs.getline(buf, sizeof(buf)); //读取一行内容
+	ifs.getline(buf, sizeof(buf)); // 再读取一行，跳过本地用户名密码
+	ifs.getline(buf, sizeof(buf));
+	Sql_Host = buf;// IP地址
+	ifs.getline(buf, sizeof(buf));
+	Sql_User = buf;// 用户名
+	ifs.getline(buf, sizeof(buf));
+	Sql_Pwd = buf;// 密码
+	ifs.getline(buf, sizeof(buf));
+	Sql_Port = atoi(buf);// 端口号
+	ifs.getline(buf, sizeof(buf));
+	Sql_DB = buf;// 数据库名
+	ifs.close(); //关闭文件
 }
 
 
@@ -11,7 +29,7 @@ CInfoFile::~CInfoFile()
 {
 }
 
-//读取登陆信息
+//读取登陆信息及数据库登录信息
 void CInfoFile::ReadLogin(CString &name, CString &pwd)
 {
 	ifstream ifs; //创建文件输入对象
@@ -24,7 +42,16 @@ void CInfoFile::ReadLogin(CString &name, CString &pwd)
 
 	ifs.getline(buf, sizeof(buf));
 	pwd = CString(buf);
-
+	ifs.getline(buf, sizeof(buf));
+	Sql_Host = buf;// IP地址
+	ifs.getline(buf, sizeof(buf));
+	Sql_User = buf;// 用户名
+	ifs.getline(buf, sizeof(buf));
+	Sql_Pwd = buf;// 密码
+	ifs.getline(buf, sizeof(buf));
+	Sql_Port = atoi(buf);// 端口号
+	ifs.getline(buf, sizeof(buf));
+	Sql_DB = buf;// 数据库名
 	ifs.close(); //关闭文件
 }
 
@@ -128,11 +155,13 @@ void CInfoFile::Addline(CString id, CString name, int sub1, int sub2)
 	}
 }
 
-BOOL CInfoFile::ConnectDB(CString strIP, CString strSqlUser, CString strSqlPassworld, CString strDataBase, int sqlPoint)
+BOOL CInfoFile::ConnectDB()
 {
 	mysql_library_init(0, NULL, NULL);
 	mysql_init(&m_sqlCon);
-	if (!mysql_real_connect(&m_sqlCon, CT2A(strIP), CT2A(strSqlUser), CT2A(strSqlPassworld),CT2A(strDataBase), sqlPoint, NULL, 0))
+	//设置字符编码
+	mysql_options(&m_sqlCon, MYSQL_SET_CHARSET_NAME, "GB18030");
+	if (!mysql_real_connect(&m_sqlCon, Sql_Host.c_str(), Sql_User.c_str(), Sql_Pwd.c_str(), Sql_DB.c_str(), Sql_Port, NULL, 0))
 	{
 		AfxMessageBox(_T("访问数据库失败!"));
 		return FALSE;
@@ -147,5 +176,23 @@ BOOL CInfoFile::ConnectDB(CString strIP, CString strSqlUser, CString strSqlPassw
 BOOL CInfoFile::DisconnectDB()
 {
 	mysql_close(&m_sqlCon);//关闭Mysql连接  
+	return TRUE;
+}
+
+BOOL CInfoFile::ReadDB()
+{
+	mysql_query(&m_sqlCon, "select * from stumanager;");
+	result = mysql_store_result(&m_sqlCon);
+	if (!result)
+		return FALSE;
+	msg tmp;
+	while (row = mysql_fetch_row(result))
+	{
+		tmp.id = row[0];
+		tmp.name = row[1];
+		tmp.sub1 = atoi(row[2]);
+		tmp.sub2 = atoi(row[3]);
+		ls.push_back(tmp);
+	}
 	return TRUE;
 }

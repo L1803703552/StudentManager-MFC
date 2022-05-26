@@ -24,6 +24,14 @@ struct msg
 
 class CInfoFile
 {
+private:
+	char sqlStr[1024];			// 存储sql语句
+	char sqlStr_head[1024];		// 存储sql语句
+	string Sql_Host;
+	string Sql_User;
+	string Sql_Pwd;
+	string Sql_DB;
+	int Sql_Port;
 public:
 	CInfoFile();
 	~CInfoFile();
@@ -46,10 +54,13 @@ public:
 	MYSQL_ROW row;
 	MYSQL m_sqlCon;
 	// 连接数据库
-	BOOL ConnectDB(CString strIP, CString strSqlUser, CString strSqlPassworld, CString strDataBase, int sqlPoint);
+	BOOL ConnectDB();
 	// 关闭数据库
 	BOOL DisconnectDB();
-
+	// 读取数据库
+	BOOL ReadDB();
+	// 写入数据库
+	BOOL WriteDB();
 	list<msg> ls;	//存储链表
 };
 
