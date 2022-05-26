@@ -27,6 +27,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_B, OnMyChange)
 	ON_MESSAGE(NM_C, OnMyChange)
 	ON_MESSAGE(NM_D, OnMyChange)
+	ON_COMMAND(ID_32771, &CMainFrame::On32771)
+	ON_COMMAND(ID_32772, &CMainFrame::On32772)
+	ON_COMMAND(ID_32773, &CMainFrame::On32773)
+	ON_COMMAND(ID_32774, &CMainFrame::On32774)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -171,4 +175,32 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		MessageBox(_T("系统错误！"), _T("警告"), MB_ICONSTOP);
 	}
 	return 0;
+}
+
+
+void CMainFrame::On32771()
+{
+	// TODO: 在此添加命令处理程序代码
+	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_A, (WPARAM)NM_A, (LPARAM)0);
+}
+
+
+void CMainFrame::On32772()
+{
+	// TODO: 在此添加命令处理程序代码
+	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_B, (WPARAM)NM_B, (LPARAM)0);
+}
+
+
+void CMainFrame::On32773()
+{
+	// TODO: 在此添加命令处理程序代码
+	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_C, (WPARAM)NM_C, (LPARAM)0);
+}
+
+
+void CMainFrame::On32774()
+{
+	// TODO: 在此添加命令处理程序代码
+	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_D, (WPARAM)NM_D, (LPARAM)0);
 }

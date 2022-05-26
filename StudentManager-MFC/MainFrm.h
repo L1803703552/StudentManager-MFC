@@ -45,6 +45,10 @@ public:
 	{
 		return &m_wndStatusBar;
 	}
+	afx_msg void On32771();
+	afx_msg void On32772();
+	afx_msg void On32773();
+	afx_msg void On32774();
 };
 
 

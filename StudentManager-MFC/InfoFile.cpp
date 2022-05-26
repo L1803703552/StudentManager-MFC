@@ -127,3 +127,25 @@ void CInfoFile::Addline(CString id, CString name, int sub1, int sub2)
 		}
 	}
 }
+
+BOOL CInfoFile::ConnectDB(CString strIP, CString strSqlUser, CString strSqlPassworld, CString strDataBase, int sqlPoint)
+{
+	mysql_library_init(0, NULL, NULL);
+	mysql_init(&m_sqlCon);
+	if (!mysql_real_connect(&m_sqlCon, CT2A(strIP), CT2A(strSqlUser), CT2A(strSqlPassworld),CT2A(strDataBase), sqlPoint, NULL, 0))
+	{
+		AfxMessageBox(_T("访问数据库失败!"));
+		return FALSE;
+	}
+	else
+	{
+		AfxMessageBox(_T("访问数据库成功!"));
+		return TRUE;
+	}
+}
+
+BOOL CInfoFile::DisconnectDB()
+{
+	mysql_close(&m_sqlCon);//关闭Mysql连接  
+	return TRUE;
+}
