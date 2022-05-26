@@ -132,6 +132,7 @@ void CSettingDlg::OnInitialUpdate()
 	CInfoFile file;
 	CString tmp;
 	file.ReadLogin(m_name, tmp);
+	file.GetDBInfo(m_sql_host, m_sql_user, m_sql_pwd, m_sql_db, m_sql_port);
 	UpdateData(FALSE);
 }
 
@@ -257,4 +258,12 @@ void CSettingDlg::OnBnClickedButton8()
 void CSettingDlg::OnBnClickedButton9()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CStringA host, user, pwd, db;
+	CInfoFile file;
+	host = m_sql_host;
+	user = m_sql_user;
+	pwd = m_sql_pwd;
+	db = m_sql_db;
+	file.WriteDBInfo(host.GetBuffer(), user.GetBuffer(), pwd.GetBuffer(), db.GetBuffer(), m_sql_port);
+	MessageBox(_T("更改成功!"), _T("提示"), MB_ICONASTERISK);
 }

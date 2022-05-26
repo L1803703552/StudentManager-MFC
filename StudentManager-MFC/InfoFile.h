@@ -57,6 +57,10 @@ public:
 	BOOL ConnectDB();
 	// 关闭数据库
 	BOOL DisconnectDB();
+	// 获取数据库连接信息
+	void GetDBInfo(CString& host, CString& user, CString& pwd, CString& db, int& port);
+	// 写入数据库连接信息
+	void WriteDBInfo(char* host, char* user, char* pwd, char* db, int prot);
 	// 读取数据库
 	BOOL ReadDB();
 	// 写入数据库

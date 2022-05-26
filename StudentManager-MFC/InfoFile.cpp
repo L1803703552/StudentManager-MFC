@@ -12,15 +12,15 @@ CInfoFile::CInfoFile()
 	ifs.getline(buf, sizeof(buf)); //读取一行内容
 	ifs.getline(buf, sizeof(buf)); // 再读取一行，跳过本地用户名密码
 	ifs.getline(buf, sizeof(buf));
-	Sql_Host = buf;// IP地址
+	Sql_Host = buf;// 主机地址
 	ifs.getline(buf, sizeof(buf));
 	Sql_User = buf;// 用户名
 	ifs.getline(buf, sizeof(buf));
 	Sql_Pwd = buf;// 密码
 	ifs.getline(buf, sizeof(buf));
-	Sql_Port = atoi(buf);// 端口号
-	ifs.getline(buf, sizeof(buf));
 	Sql_DB = buf;// 数据库名
+	ifs.getline(buf, sizeof(buf));
+	Sql_Port = atoi(buf);// 端口号
 	ifs.close(); //关闭文件
 }
 
@@ -29,7 +29,7 @@ CInfoFile::~CInfoFile()
 {
 }
 
-//读取登陆信息及数据库登录信息
+//读取登陆信息
 void CInfoFile::ReadLogin(CString &name, CString &pwd)
 {
 	ifstream ifs; //创建文件输入对象
@@ -39,19 +39,8 @@ void CInfoFile::ReadLogin(CString &name, CString &pwd)
 
 	ifs.getline(buf, sizeof(buf)); //读取一行内容
 	name = CString(buf);			 //char *转换为CString
-
 	ifs.getline(buf, sizeof(buf));
 	pwd = CString(buf);
-	ifs.getline(buf, sizeof(buf));
-	Sql_Host = buf;// IP地址
-	ifs.getline(buf, sizeof(buf));
-	Sql_User = buf;// 用户名
-	ifs.getline(buf, sizeof(buf));
-	Sql_Pwd = buf;// 密码
-	ifs.getline(buf, sizeof(buf));
-	Sql_Port = atoi(buf);// 端口号
-	ifs.getline(buf, sizeof(buf));
-	Sql_DB = buf;// 数据库名
 	ifs.close(); //关闭文件
 }
 
@@ -61,8 +50,8 @@ void CInfoFile::WritePwd(char* name, char* pwd)
 	ofstream ofs;	 //创建文件输出对象
 	ofs.open(_F_LOGIN); //打开文件
 
-	ofs << name << endl; // name写入文件
-	ofs << pwd << endl;	// pwd写入文件
+	ofs << name << endl;
+	ofs << pwd << endl;
 
 	ofs.close();	//关闭文件
 }
@@ -179,6 +168,40 @@ BOOL CInfoFile::DisconnectDB()
 	return TRUE;
 }
 
+void CInfoFile::GetDBInfo(CString& host, CString& user, CString& pwd, CString& db, int& port)
+{
+	host = (CString)Sql_Host.c_str();
+	user = (CString)Sql_User.c_str();
+	pwd = (CString)Sql_Pwd.c_str();
+	db = (CString)Sql_DB.c_str();
+	port = Sql_Port;
+}
+
+void CInfoFile::WriteDBInfo(char* host, char* user, char* pwd, char* db, int port)
+{
+	ifstream ifs;
+	string user_name, user_pwd;
+	ifs.open(_F_LOGIN);
+	char buf[1024] = { 0 };
+	ifs.getline(buf, sizeof(buf));
+	user_name = buf;
+	ifs.getline(buf, sizeof(buf));
+	user_pwd = buf;
+	ifs.close(); //关闭文件
+
+	ofstream ofs;
+	ofs.open(_F_LOGIN);
+	ofs << user_name << endl;
+	ofs << user_pwd << endl;
+	ofs << host << endl;
+	ofs << user << endl;
+	ofs << pwd << endl;
+	ofs << db << endl;
+	ofs << port << endl;
+
+	ofs.close();	//关闭文件
+}
+
 BOOL CInfoFile::ReadDB()
 {
 	mysql_query(&m_sqlCon, "select * from stumanager;");
@@ -194,5 +217,10 @@ BOOL CInfoFile::ReadDB()
 		tmp.sub2 = atoi(row[3]);
 		ls.push_back(tmp);
 	}
+	return TRUE;
+}
+
+BOOL CInfoFile::WriteDB()
+{
 	return TRUE;
 }
