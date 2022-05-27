@@ -152,12 +152,10 @@ BOOL CInfoFile::ConnectDB()
 	mysql_options(&m_sqlCon, MYSQL_SET_CHARSET_NAME, "GB18030");
 	if (!mysql_real_connect(&m_sqlCon, Sql_Host.c_str(), Sql_User.c_str(), Sql_Pwd.c_str(), Sql_DB.c_str(), Sql_Port, NULL, 0))
 	{
-		AfxMessageBox(_T("访问数据库失败!"));
 		return FALSE;
 	}
 	else
 	{
-		AfxMessageBox(_T("访问数据库成功!"));
 		return TRUE;
 	}
 }
@@ -204,6 +202,7 @@ void CInfoFile::WriteDBInfo(char* host, char* user, char* pwd, char* db, int por
 
 BOOL CInfoFile::ReadDB()
 {
+	ls.clear();
 	mysql_query(&m_sqlCon, "select * from stumanager;");
 	result = mysql_store_result(&m_sqlCon);
 	if (!result)
@@ -217,10 +216,36 @@ BOOL CInfoFile::ReadDB()
 		tmp.sub2 = atoi(row[3]);
 		ls.push_back(tmp);
 	}
+	mysql_free_result(result);
 	return TRUE;
 }
 
 BOOL CInfoFile::WriteDB()
 {
+	int flag;
+	// 删除原记录
+	flag = mysql_query(&m_sqlCon, "drop table test;");
+	if (flag)
+		return FALSE;
+	// 创建表头
+	flag = mysql_query(&m_sqlCon, "create table if not exists test (\
+				`学号` varchar (255) NOT NULL DEFAULT '',\
+				`姓名` varchar (255) NULL DEFAULT '',\
+				`成绩1` int NULL,\
+				`成绩2` int NULL,\
+				PRIMARY KEY (`学号`)\
+	);");
+	if (flag)
+		return FALSE;
+	// 插入记录
+	char sqlhead[1024] = { 0 }, sqlstr[1024] = { 0 };
+	snprintf(sqlhead, 1024, "insert into test (学号 ,姓名 ,成绩1 ,成绩2 ) values( ");
+	for (list<msg>::iterator it = ls.begin(); it != ls.end(); it++)
+	{
+		snprintf(sqlstr, 1024, "%s '%s', '%s', %d, %d );", sqlhead, it->id.c_str(), it->name.c_str(), it->sub1, it->sub2);
+		flag = mysql_real_query(&m_sqlCon, sqlstr, strlen(sqlstr));
+		if (flag)
+			return FALSE;
+	}
 	return TRUE;
 }

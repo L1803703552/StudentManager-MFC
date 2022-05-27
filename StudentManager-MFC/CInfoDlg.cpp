@@ -88,7 +88,21 @@ void CInfoDlg::OnInitialUpdate()
 	m_list.DeleteAllItems();
 	m_btn.EnableWindow(FALSE);
 	CInfoFile file;
-	file.ReadDocline();
+	if (file.ConnectDB() == FALSE)
+	{
+		SetStatusBarText(_T("数据库连接失败，将使用本地数据"));
+		file.ReadDocline();
+	}
+	else if (file.ReadDB() == FALSE)
+	{
+		SetStatusBarText(_T("数据读取失败，将使用本地数据"));
+		file.ReadDocline();
+	}
+	else
+	{
+		SetStatusBarText(_T("数据库连接成功！"));
+		file.DisconnectDB();
+	}
 	m_EditCtrl.SetDimText(_T("请输入关键词"));
 	int i = 0;
 	CString str;
@@ -335,8 +349,21 @@ void CInfoDlg::OnBnClickedButton6()
 	// 保存
 	CInfoFile file;
 	file.ls = list_bak;
-	file.WirteDocline();
-	SetStatusBarText(_T("保存成功"));
+	if (file.ConnectDB() == FALSE)
+	{
+		SetStatusBarText(_T("数据库连接失败，数据将保存到本地"));
+		file.WirteDocline();
+	}
+	else if (file.WriteDB() == FALSE)
+	{
+		SetStatusBarText(_T("数据库写入失败，数据将保存到本地"));
+		file.WirteDocline();
+	}
+	else
+	{
+		SetStatusBarText(_T("保存成功"));
+		file.DisconnectDB();
+	}
 	autoSave();
 }
 

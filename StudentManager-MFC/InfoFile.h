@@ -25,8 +25,6 @@ struct msg
 class CInfoFile
 {
 private:
-	char sqlStr[1024];			// ¥Ê¥¢sql”Ôæ‰
-	char sqlStr_head[1024];		// ¥Ê¥¢sql”Ôæ‰
 	string Sql_Host;
 	string Sql_User;
 	string Sql_Pwd;
