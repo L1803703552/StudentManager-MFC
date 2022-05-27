@@ -103,7 +103,12 @@ void CGoodDlg::OnInitialUpdate()
 	m_font1.CreatePointFont(200, _T("隶书"));
 	m_text1.SetFont(&m_font1);
 	CInfoFile file;
-	file.ReadDocline();
+	if (file.ConnectDB() == FALSE)
+		file.ReadDocline();
+	else if (file.ReadDB() == FALSE)
+		file.ReadDocline();
+	else
+		file.DisconnectDB();
 	list<msg> list_data;
 	list_data = file.ls;
 	list_data.sort(cmp);

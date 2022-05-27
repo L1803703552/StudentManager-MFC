@@ -49,14 +49,15 @@ void CSelectView::OnInitialUpdate()
 	CTreeView::OnInitialUpdate();
 	// TODO:  在此添加专用代码和/或调用基类
 
-	HICON icons[4];
+	HICON icons[5];
 	icons[0] = AfxGetApp()->LoadIconW(IDI_ICON_WELCOME);
 	icons[1] = AfxGetApp()->LoadIconW(IDI_ICON_INFO);
 	icons[2] = AfxGetApp()->LoadIconW(IDI_ICON_GOOD);
-	icons[3] = AfxGetApp()->LoadIconW(IDI_ICON_SETTING);
+	icons[3] = AfxGetApp()->LoadIconW(IDI_ICON_ANALYSIS);
+	icons[4] = AfxGetApp()->LoadIconW(IDI_ICON_SETTING);
 
-	m_imageList.Create(32, 32, ILC_COLOR32, 4, 4);
-	for (int i = 0; i < 4; i++)
+	m_imageList.Create(32, 32, ILC_COLOR32, 5, 5);
+	for (int i = 0; i < 5; i++)
 		m_imageList.Add(icons[i]);
 	//获取数视图中的树控件 CTreeView::GetTreeCtrl
 	m_treeCtrl = &GetTreeCtrl();
@@ -68,7 +69,8 @@ void CSelectView::OnInitialUpdate()
 	m_treeCtrl->InsertItem(TEXT("欢迎界面"), 0, 0, NULL);
 	m_treeCtrl->InsertItem(TEXT("成绩管理"), 1, 1, NULL);
 	m_treeCtrl->InsertItem(TEXT("优秀学生"), 2, 2, NULL);
-	m_treeCtrl->InsertItem(TEXT("系统设置"), 3, 3, NULL);
+	m_treeCtrl->InsertItem(TEXT("成绩分析"), 3, 3, NULL);
+	m_treeCtrl->InsertItem(TEXT("系统设置"), 4, 4, NULL);
 }
 
 
@@ -103,8 +105,12 @@ void CSelectView::OnTvnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 	{
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_C, (WPARAM)NM_C, (LPARAM)0);
 	}
-	else if (str == TEXT("系统设置"))
+	else if (str == TEXT("成绩分析"))
 	{
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_D, (WPARAM)NM_D, (LPARAM)0);
+	}
+	else if (str == TEXT("系统设置"))
+	{
+		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_E, (WPARAM)NM_E, (LPARAM)0);
 	}
 }

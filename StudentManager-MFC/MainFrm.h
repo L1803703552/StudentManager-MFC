@@ -49,6 +49,7 @@ public:
 	afx_msg void On32772();
 	afx_msg void On32773();
 	afx_msg void On32774();
+	afx_msg void On32775();
 };
 
 

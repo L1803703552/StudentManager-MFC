@@ -194,6 +194,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CAnalysisDlg.h" />
     <ClInclude Include="CDimEditCtrl.h" />
     <ClInclude Include="CDispalyView.h" />
     <ClInclude Include="CGoodDlg.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAnalysisDlg.cpp" />
     <ClCompile Include="CDimEditCtrl.cpp" />
     <ClCompile Include="CDispalyView.cpp" />
     <ClCompile Include="CGoodDlg.cpp" />
@@ -247,7 +249,7 @@
     <Image Include="res\Good.ico" />
     <Image Include="res\Info.ico" />
     <Image Include="res\Menu.ico" />
-    <Image Include="res\Screen.ico" />
+    <Image Include="res\Analysis.ico" />
     <Image Include="res\Setting.ico" />
     <Image Include="res\StudentManager-MFC.ico" />
     <Image Include="res\StudentManager-MFCDoc.ico" />

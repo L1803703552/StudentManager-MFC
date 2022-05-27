@@ -12,6 +12,7 @@
 #include "CInfoDlg.h"
 #include "CSettingDlg.h"
 #include "CGoodDlg.h"
+#include "CAnalysisDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -27,10 +28,12 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_B, OnMyChange)
 	ON_MESSAGE(NM_C, OnMyChange)
 	ON_MESSAGE(NM_D, OnMyChange)
+	ON_MESSAGE(NM_E, OnMyChange)
 	ON_COMMAND(ID_32771, &CMainFrame::On32771)
 	ON_COMMAND(ID_32772, &CMainFrame::On32772)
 	ON_COMMAND(ID_32773, &CMainFrame::On32773)
 	ON_COMMAND(ID_32774, &CMainFrame::On32774)
+	ON_COMMAND(ID_32775, &CMainFrame::On32775)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -160,6 +163,19 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		break;
 	case NM_D:
 	{
+		Context.m_pNewViewClass = RUNTIME_CLASS(CAnalysisDlg);
+		Context.m_pCurrentFrame = this;
+		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
+		m_spliter.DeleteView(0, 1);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CAnalysisDlg), CSize(600, 600), &Context);
+		CAnalysisDlg* pNewView = (CAnalysisDlg*)m_spliter.GetPane(0, 1);
+		m_spliter.RecalcLayout();
+		pNewView->OnInitialUpdate();
+		m_spliter.SetActivePane(0, 1);
+	}
+		break;
+	case NM_E:
+	{
 		Context.m_pNewViewClass = RUNTIME_CLASS(CSettingDlg);
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
@@ -170,7 +186,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
 	}
-		break;
+	break;
 	default:
 		MessageBox(_T("系统错误！"), _T("警告"), MB_ICONSTOP);
 	}
@@ -200,6 +216,13 @@ void CMainFrame::On32773()
 
 
 void CMainFrame::On32774()
+{
+	// TODO: 在此添加命令处理程序代码
+	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_E, (WPARAM)NM_E, (LPARAM)0);
+}
+
+
+void CMainFrame::On32775()
 {
 	// TODO: 在此添加命令处理程序代码
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_D, (WPARAM)NM_D, (LPARAM)0);

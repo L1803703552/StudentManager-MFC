@@ -224,11 +224,11 @@ BOOL CInfoFile::WriteDB()
 {
 	int flag;
 	// 删除原记录
-	flag = mysql_query(&m_sqlCon, "drop table test;");
+	flag = mysql_query(&m_sqlCon, "drop table stumanager;");
 	if (flag)
 		return FALSE;
 	// 创建表头
-	flag = mysql_query(&m_sqlCon, "create table if not exists test (\
+	flag = mysql_query(&m_sqlCon, "create table if not exists stumanager (\
 				`学号` varchar (255) NOT NULL DEFAULT '',\
 				`姓名` varchar (255) NULL DEFAULT '',\
 				`成绩1` int NULL,\
@@ -239,7 +239,7 @@ BOOL CInfoFile::WriteDB()
 		return FALSE;
 	// 插入记录
 	char sqlhead[1024] = { 0 }, sqlstr[1024] = { 0 };
-	snprintf(sqlhead, 1024, "insert into test (学号 ,姓名 ,成绩1 ,成绩2 ) values( ");
+	snprintf(sqlhead, 1024, "insert into stumanager (学号 ,姓名 ,成绩1 ,成绩2 ) values( ");
 	for (list<msg>::iterator it = ls.begin(); it != ls.end(); it++)
 	{
 		snprintf(sqlstr, 1024, "%s '%s', '%s', %d, %d );", sqlhead, it->id.c_str(), it->name.c_str(), it->sub1, it->sub2);

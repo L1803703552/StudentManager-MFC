@@ -72,6 +72,9 @@
     <ClInclude Include="CDimEditCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CAnalysisDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StudentManager-MFC.cpp">
@@ -122,6 +125,9 @@
     <ClCompile Include="CDimEditCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CAnalysisDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="StudentManagerMFC.rc">
@@ -155,7 +161,7 @@
     <Image Include="res\Menu.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\Screen.ico">
+    <Image Include="res\Analysis.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
