@@ -162,9 +162,27 @@ void CSettingDlg::OnBnClickedButton3()
 		UpdateData(FALSE);
 		return;
 	}
-	file.ReadDocline();
+	if (file.ConnectDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else if (file.ReadDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else
+		file.DisconnectDB();
 	file.ls.clear();
-	file.WirteDocline();
+	if (file.ConnectDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else if (file.WriteDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else
+		file.DisconnectDB();
 	m_pwd.Empty();
 	m_text1.SetWindowTextW(_T("操作成功完成！"));
 	UpdateData(FALSE);
@@ -196,13 +214,31 @@ void CSettingDlg::OnBnClickedButton4()
 		UpdateData(FALSE);
 		return;
 	}
-	file.ReadDocline();
+	if (file.ConnectDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else if (file.ReadDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else
+		file.DisconnectDB();
 	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
 	{
 		it->sub1 = 0;
 		it->sub2 = 0;
 	}
-	file.WirteDocline();
+	if (file.ConnectDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else if (file.WriteDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else
+		file.DisconnectDB();
 	m_pwd.Empty();
 	m_text2.SetWindowTextW(_T("操作成功完成！"));
 	UpdateData(FALSE);

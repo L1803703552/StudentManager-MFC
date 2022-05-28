@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(CInfoDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON6, &CInfoDlg::OnBnClickedButton6)
 	ON_BN_CLICKED(IDC_BUTTON7, &CInfoDlg::OnBnClickedButton7)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CInfoDlg::OnNMDblclkList1)
+	ON_BN_CLICKED(IDC_BUTTON8, &CInfoDlg::OnBnClickedButton8)
 END_MESSAGE_MAP()
 
 
@@ -263,7 +264,7 @@ void CInfoDlg::OnBnClickedButton4()
 	// 导出信息
 	ofstream ofs;
 	CString gReadFilePathName;
-	CFileDialog fileDlg(FALSE, _T("csv"), _T("信息导出"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Excel表格 (*.csv)|.csv|文本文档 (*.txt)|*.txt|All File (*.*)|*.*||"), NULL);
+	CFileDialog fileDlg(FALSE, _T("csv"), _T("信息导出"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Excel逗号分隔表格 (*.csv)|.csv|文本文档 (*.txt)|*.txt|All File (*.*)|*.*||"), NULL);
 	if (fileDlg.DoModal() == IDOK)    //弹出对话框
 	{
 		gReadFilePathName = fileDlg.GetPathName();
@@ -432,4 +433,53 @@ void CInfoDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 	// 双击列表事件
 	OnBnClickedButton3();
 	*pResult = 0;
+}
+
+
+void CInfoDlg::OnBnClickedButton8()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// 批量导入
+	CString gReadFilePathName;
+	CFileDialog fileDlg(true, _T("txt"), _T(""), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("文本文档 (*.txt)|*.txt|Excel逗号分隔表格 (*.csv)|*.csv|All File (*.*)|*.*||"), NULL);
+	if (fileDlg.DoModal() == IDOK)    //弹出对话框
+	{
+		gReadFilePathName = fileDlg.GetPathName();//得到完整的文件名和目录名拓展名
+		MessageBox(gReadFilePathName);
+		ifstream ifs(gReadFilePathName.GetBuffer());
+		char buf[1024] = { 0 };
+		//取出表头
+		ifs.getline(buf, sizeof(buf));
+		while (!ifs.eof()) //没到文件结尾
+		{
+			msg tmp;
+
+			ifs.getline(buf, sizeof(buf)); //读取一行
+
+			// AfxMessageBox(CString(buf));
+			char* sst = strtok(buf, ","); //以“,”切割
+			if (sst != NULL)
+			{
+				tmp.id = sst; //学号
+			}
+			else
+			{
+				break;
+			}
+
+			sst = strtok(NULL, ",");
+			tmp.name = sst;	//姓名
+
+			sst = strtok(NULL, ",");
+			tmp.sub1 = atoi(sst);	//学科1
+
+			sst = strtok(NULL, ",");
+			tmp.sub2 = atoi(sst);	//学科2
+
+			list_bak.push_back(tmp); //放在链表的后面
+		}
+
+		ifs.close(); //关闭文件
+		OnBnClickedButton7();
+	}
 }

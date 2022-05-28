@@ -52,6 +52,8 @@ private:
 	CStatusBar* m_status_bar;
 	// 设置状态栏
 	void SetStatusBarText(CString in);
+public:
+	afx_msg void OnBnClickedButton8();
 };
 
 
