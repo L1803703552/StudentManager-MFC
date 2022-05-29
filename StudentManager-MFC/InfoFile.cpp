@@ -8,7 +8,6 @@ CInfoFile::CInfoFile()
 	ifs.open(_F_LOGIN); //打开文件
 
 	char buf[1024] = { 0 };
-
 	ifs.getline(buf, sizeof(buf)); //读取一行内容
 	ifs.getline(buf, sizeof(buf)); // 再读取一行，跳过本地用户名密码
 	ifs.getline(buf, sizeof(buf));
@@ -63,8 +62,18 @@ void CInfoFile::ReadDocline()
 
 	char buf[1024] = { 0 };
 	ls.clear();
+	subName.clear();
 	//取出表头
 	ifs.getline(buf, sizeof(buf));
+	char* head = strtok(buf, ",");//取出学号
+	head = strtok(NULL, ",");//姓名
+	while (head != NULL)
+	{
+		head = strtok(NULL, ",");
+		if (head == NULL)
+			break;
+		subName.push_back(CString(head));
+	}
 
 	while (!ifs.eof()) //没到文件结尾
 	{
@@ -75,23 +84,21 @@ void CInfoFile::ReadDocline()
 		// AfxMessageBox(CString(buf));
 		char *sst = strtok(buf, ","); //以“,”切割
 		if (sst != NULL)
-		{
 			tmp.id = sst; //学号
-		}
 		else
-		{
 			break;
-		}
-
 		sst = strtok(NULL, ",");
 		tmp.name = sst;	//姓名
 
-		sst = strtok(NULL, ",");
-		tmp.sub1 = atoi(sst);	//学科1
-
-		sst = strtok(NULL, ",");
-		tmp.sub2 = atoi(sst);	//学科2
-
+		for (int i = 0; i < subName.size(); i++)//读取每个学科成绩
+		{
+			sst = strtok(NULL, ",");
+			if (sst == NULL)
+				tmp.sub.push_back(0);
+			else
+				tmp.sub.push_back(atoi(sst));
+		}
+		
 		ls.push_back(tmp); //放在链表的后面
 	}
 
@@ -103,45 +110,55 @@ void CInfoFile::WirteDocline()
 {
 	ofstream ofs(_F_STOCK);//输出方式打开文件
 
-	if (ls.size() > 0)	//学生链表有内容才执行
-	{
-		ofs << "学号,姓名,学科1,学科2" << endl; //写入表头
-
+	//if (ls.size() > 0)	//学生链表有内容才执行
+	//{
+		ofs << "学号,姓名"; //写入表头
+		for (vector<CString>::iterator it = subName.begin(); it != subName.end(); it++)
+		{
+			ofs << "," << CStringA(*it);
+		}
+		ofs << endl;
 		//通过迭代器取出链表内容，写入文件，以“,”分隔，结尾加换行
 		for (list<msg>::iterator it = ls.begin(); it != ls.end(); it++)
 		{
 			ofs << it->id << ",";		
-			ofs << it->name << ",";
-			ofs << it->sub1 << ",";
-			ofs << it->sub2 << endl;
+			ofs << it->name;
+			for (vector<int>::iterator its = it->sub.begin(); its != it->sub.end(); its++)
+			{
+				ofs << "," << *its;
+			}
+			ofs << endl;
 		}
-	}
+	//}
 
 	ofs.close();//关闭文件
 }
 
 // 添加学生
 // id:学号，name:姓名，sub1:成绩1，sub2:成绩2
-void CInfoFile::Addline(CString id, CString name, int sub1, int sub2)
+void CInfoFile::Addline(char *buf)
 {
 	msg tmp;
 
-	if (ls.size() > 0)
-	{
-		//学号、姓名、数量有效
-		if (!name.IsEmpty() && !id.IsEmpty())
-		{
-			CStringA str;
-			str = id;
-			tmp.id = str.GetBuffer();
-			str = name;	//CString转CStirngA
-			tmp.name = str.GetBuffer(); //CStirngA转char *，姓名
-			tmp.sub1 = sub1;	//学科1
-			tmp.sub2 = sub2;	//学科2
+	// AfxMessageBox(CString(buf));
+	char* sst = strtok(buf, ",");
+	if (sst != NULL)
+		tmp.id = sst; //学号
+	else
+		return;
+	sst = strtok(NULL, ",");
+	tmp.name = sst;	//姓名
 
-			ls.push_back(tmp);	//放在链表的后面
-		}
+	for (int i = 0; i < subName.size(); i++)//读取每个学科成绩
+	{
+		sst = strtok(NULL, ",");
+		if (sst == NULL)
+			tmp.sub.push_back(0);
+		else
+			tmp.sub.push_back(atoi(sst));
 	}
+
+	ls.push_back(tmp); //放在链表的后面
 }
 
 BOOL CInfoFile::ConnectDB()
@@ -249,3 +266,4 @@ BOOL CInfoFile::WriteDB()
 	}
 	return TRUE;
 }
+

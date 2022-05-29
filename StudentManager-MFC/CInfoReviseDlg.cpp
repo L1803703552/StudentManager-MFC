@@ -15,8 +15,7 @@ CInfoReviseDlg::CInfoReviseDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(DIALOG_INFO_REVISE, pParent)
 	, m_id(_T(""))
 	, m_name(_T(""))
-	, m_sub1(0)
-	, m_sub2(0)
+	, m_scores(0)
 {
 
 }
@@ -30,14 +29,16 @@ void CInfoReviseDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT1, m_id);
 	DDX_Text(pDX, IDC_EDIT2, m_name);
-	DDX_Text(pDX, IDC_EDIT3, m_sub1);
-	DDX_Text(pDX, IDC_EDIT4, m_sub2);
+	DDX_Control(pDX, IDC_COMBO1, m_subs);
+	DDX_Text(pDX, IDC_EDIT3, m_scores);
 }
 
 
 BEGIN_MESSAGE_MAP(CInfoReviseDlg, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CInfoReviseDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CInfoReviseDlg::OnBnClickedCancel)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CInfoReviseDlg::OnCbnSelchangeCombo1)
+	ON_CBN_DROPDOWN(IDC_COMBO1, &CInfoReviseDlg::OnCbnDropdownCombo1)
 END_MESSAGE_MAP()
 
 
@@ -56,14 +57,19 @@ BOOL CInfoReviseDlg::OnInitDialog()
 	//得到⾏号，通过POSITION转化
 	row = (int)m_list->GetNextSelectedItem(pos);
 	//获取第row第0列的内容，并保存到str中
-	str = m_list->GetItemText(row, 0);
+	int j = 0;
+	str = m_list->GetItemText(row, j++);
 	m_id = CStringA(str);
-	str = m_list->GetItemText(row, 1);
+	str = m_list->GetItemText(row, j++);
 	m_name = CStringA(str);
-	str = m_list->GetItemText(row, 2);
-	m_sub1 = _ttoi(str);
-	str = m_list->GetItemText(row, 3);
-	m_sub2 = _ttoi(str);
+	for (vector<CString>::iterator it = subs.begin(); it != subs.end(); it++)
+	{
+		m_subs.AddString(*it);
+		str = m_list->GetItemText(row, j++);
+		scores.push_back(_ttoi(str));
+	}
+	m_subs.SetCurSel(0);
+	m_scores = scores[0];
 	UpdateData(FALSE);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -73,7 +79,10 @@ void CInfoReviseDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(TRUE);
-	CString str;
+	// 拿到最后的值
+	int index = m_subs.GetCurSel();
+	scores[index] = m_scores;
+
 	int row;
 	POSITION pos = m_list->GetFirstSelectedItemPosition();
 	row = (int)m_list->GetNextSelectedItem(pos);
@@ -87,21 +96,23 @@ void CInfoReviseDlg::OnBnClickedOk()
 		if (m_id == (CString)it->id.c_str())
 		{
 			it->name = CStringA(m_name);
-			it->sub1 = m_sub1;
-			it->sub2 = m_sub2;
+			it->sub = scores;
 			break;
 		}
 	}
-	int c = 0;
+	CString str;
+	int c = 0, sum = 0;
 	m_list->SetItemText(row, c++, m_id);
 	m_list->SetItemText(row, c++, m_name);
-	str.Format(_T("%d"), m_sub1);
+	for (vector<int>::iterator it = scores.begin(); it != scores.end(); it++)
+	{
+		sum += *it;
+		str.Format(_T("%d"), *it);
+		m_list->SetItemText(row, c++, str);
+	}
+	str.Format(_T("%.1f"), 1.0 * sum / scores.size());
 	m_list->SetItemText(row, c++, str);
-	str.Format(_T("%d"), m_sub2);
-	m_list->SetItemText(row, c++, str);
-	str.Format(_T("%.1f"), 1.0*(m_sub1 + m_sub2) / 2);
-	m_list->SetItemText(row, c++, str);
-	str.Format(_T("%d"), m_sub1 + m_sub2);
+	str.Format(_T("%d"), sum);
 	m_list->SetItemText(row, c++, str);
 	MessageBox(TEXT("修改成功！"), TEXT("提示"), MB_ICONASTERISK);
 	CDialogEx::OnOK();
@@ -123,8 +134,28 @@ void CInfoReviseDlg::OnOK()
 }
 
 
-void CInfoReviseDlg::getData(list<msg>* ls, CListCtrl* lst)
+void CInfoReviseDlg::getData(list<msg>* ls, CListCtrl* lst, vector<CString>& dict)
 {
 	list_bak = ls;
 	m_list = lst;
+	subs = dict;
+}
+
+
+void CInfoReviseDlg::OnCbnSelchangeCombo1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	int index = m_subs.GetCurSel();
+	m_scores = scores[index];
+	UpdateData(FALSE);
+}
+
+
+void CInfoReviseDlg::OnCbnDropdownCombo1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	int index = m_subs.GetCurSel();
+	scores[index] = m_scores;
 }

@@ -8,6 +8,7 @@
 #include <string>
 #include <mysql.h>
 #include <winsock.h>
+#include <vector>
 
 #define _F_LOGIN "./login.ini"
 #define _F_STOCK "./stock.txt"
@@ -16,6 +17,7 @@ using namespace std;
 
 struct msg
 {
+	vector<int> sub;// 成绩字段
 	string id;		// 学号
 	string name;	// 姓名
 	int sub1;		// 成绩1
@@ -47,7 +49,7 @@ public:
 	void WirteDocline();
 
 	// 添加学生信息
-	void Addline(CString id,CString name, int sub1, int sub2);
+	void Addline(char* buf);
 	MYSQL_RES* result;
 	MYSQL_ROW row;
 	MYSQL m_sqlCon;
@@ -63,6 +65,8 @@ public:
 	BOOL ReadDB();
 	// 写入数据库
 	BOOL WriteDB();
+	vector<CString> subName; // 学科名称
+	vector<CString> head; // 表头
 	list<msg> ls;	//存储链表
 };
 

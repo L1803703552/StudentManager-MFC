@@ -16,8 +16,7 @@ CInfoAddDlg::CInfoAddDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(DIALOG_INFO_ADD, pParent)
 	, m_id(_T(""))
 	, m_name(_T(""))
-	, m_sub1(0)
-	, m_sub2(0)
+	, m_scores(0)
 {
 
 }
@@ -31,14 +30,16 @@ void CInfoAddDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT1, m_id);
 	DDX_Text(pDX, IDC_EDIT2, m_name);
-	DDX_Text(pDX, IDC_EDIT3, m_sub1);
-	DDX_Text(pDX, IDC_EDIT4, m_sub2);
+	DDX_Text(pDX, IDC_EDIT3, m_scores);
+	DDX_Control(pDX, IDC_COMBO1, m_subs);
 }
 
 
 BEGIN_MESSAGE_MAP(CInfoAddDlg, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &CInfoAddDlg::OnBnClickedCancel)
 	ON_BN_CLICKED(IDOK, &CInfoAddDlg::OnBnClickedOk)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CInfoAddDlg::OnCbnSelchangeCombo1)
+	ON_CBN_DROPDOWN(IDC_COMBO1, &CInfoAddDlg::OnCbnDropdownCombo1)
 END_MESSAGE_MAP()
 
 
@@ -48,14 +49,13 @@ void CInfoAddDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(TRUE);
+	// 拿到最后的值
+	int index = m_subs.GetCurSel();
+	scores[index] = m_scores;
+
 	if (m_id.IsEmpty())
 	{
 		MessageBox(_T("请输入学号！"));
-		return;
-	}
-	if (m_name.IsEmpty())
-	{
-		MessageBox(_T("请输入姓名！"));
 		return;
 	}
 	for (list<msg>::iterator it = list_bak->begin(); it != list_bak->end(); it++)
@@ -66,23 +66,30 @@ void CInfoAddDlg::OnBnClickedOk()
 			return;
 		}
 	}
+	if (m_name.IsEmpty())
+	{
+		MessageBox(_T("请输入姓名！"));
+		return;
+	}
 	CString str;
 	msg tmp;
 	tmp.id = CStringA(m_id);
 	tmp.name = CStringA(m_name);
-	tmp.sub1 = m_sub1;
-	tmp.sub2 = m_sub2;
+	tmp.sub = scores;
 	list_bak->push_back(tmp);
-	int n = m_list->GetItemCount(), c = 1;;
+	int n = m_list->GetItemCount(), c = 1;
 	m_list->InsertItem(n, m_id);
 	m_list->SetItemText(n, c++, m_name);
-	str.Format(_T("%d"), m_sub1);
+	int sum = 0;
+	for (vector<int>::iterator it = scores.begin(); it != scores.end(); it++)
+	{
+		str.Format(_T("%d"), *it);
+		sum += *it;
+		m_list->SetItemText(n, c++, str);
+	}
+	str.Format(_T("%.1f"), 1.0 * sum / scores.size());
 	m_list->SetItemText(n, c++, str);
-	str.Format(_T("%d"), m_sub2);
-	m_list->SetItemText(n, c++, str);
-	str.Format(_T("%.1f"), 1.0*(m_sub1 + m_sub2) / 2);
-	m_list->SetItemText(n, c++, str);
-	str.Format(_T("%d"), m_sub1 + m_sub2);
+	str.Format(_T("%d"), sum);
 	m_list->SetItemText(n, c++, str);
 	MessageBox(TEXT("添加成功！"), TEXT("提示"), MB_ICONASTERISK);
 	CDialogEx::OnOK();
@@ -109,17 +116,40 @@ BOOL CInfoAddDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-
-	m_sub1 = 0;
-	m_sub2 = 0;
+	for (vector<CString>::iterator it = subs.begin(); it != subs.end(); it++)
+	{
+		m_subs.AddString(*it);
+		scores.push_back(0);
+	}
+	m_subs.SetCurSel(0);
 	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
-void CInfoAddDlg::getData(list<msg>* ls, CListCtrl* lst)
+void CInfoAddDlg::getData(list<msg>* ls, CListCtrl* lst, vector<CString> &dict)
 {
 	list_bak = ls;
 	m_list = lst;
+	subs = dict;
+}
+
+
+void CInfoAddDlg::OnCbnSelchangeCombo1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	int index = m_subs.GetCurSel();
+	m_scores = scores[index];
+	UpdateData(FALSE);
+}
+
+
+void CInfoAddDlg::OnCbnDropdownCombo1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	int index = m_subs.GetCurSel();
+	scores[index] = m_scores;
 }

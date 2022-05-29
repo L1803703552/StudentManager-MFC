@@ -22,6 +22,7 @@ CSettingDlg::CSettingDlg()
 	, m_sql_user(_T(""))
 	, m_sql_pwd(_T(""))
 	, m_sql_db(_T(""))
+	, m_sub(_T(""))
 {
 
 }
@@ -44,6 +45,8 @@ void CSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT8, m_sql_user);
 	DDX_Text(pDX, IDC_EDIT9, m_sql_pwd);
 	DDX_Text(pDX, IDC_EDIT10, m_sql_db);
+	DDX_Text(pDX, IDC_EDIT12, m_sub);
+	DDX_Control(pDX, IDC_COMBO1, m_cbx);
 }
 
 BEGIN_MESSAGE_MAP(CSettingDlg, CFormView)
@@ -52,6 +55,8 @@ BEGIN_MESSAGE_MAP(CSettingDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON4, &CSettingDlg::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON8, &CSettingDlg::OnBnClickedButton8)
 	ON_BN_CLICKED(IDC_BUTTON9, &CSettingDlg::OnBnClickedButton9)
+	ON_BN_CLICKED(IDC_BUTTON10, &CSettingDlg::OnBnClickedButton10)
+	ON_BN_CLICKED(IDC_BUTTON11, &CSettingDlg::OnBnClickedButton11)
 END_MESSAGE_MAP()
 
 
@@ -133,6 +138,21 @@ void CSettingDlg::OnInitialUpdate()
 	CString tmp;
 	file.ReadLogin(m_name, tmp);
 	file.GetDBInfo(m_sql_host, m_sql_user, m_sql_pwd, m_sql_db, m_sql_port);
+	if (file.ConnectDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else if (file.ReadDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else
+		file.DisconnectDB();
+	for (vector<CString>::iterator it = file.subName.begin(); it != file.subName.end(); it++)
+	{
+		m_cbx.AddString(*it);
+	}
+	m_cbx.SetCurSel(0);
 	UpdateData(FALSE);
 }
 
@@ -226,8 +246,8 @@ void CSettingDlg::OnBnClickedButton4()
 		file.DisconnectDB();
 	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
 	{
-		it->sub1 = 0;
-		it->sub2 = 0;
+		vector<int> tmp(it->sub.size(), 0);
+		it->sub = tmp;
 	}
 	if (file.ConnectDB() == FALSE)
 	{
@@ -294,6 +314,7 @@ void CSettingDlg::OnBnClickedButton8()
 void CSettingDlg::OnBnClickedButton9()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
 	CStringA host, user, pwd, db;
 	CInfoFile file;
 	host = m_sql_host;
@@ -302,4 +323,131 @@ void CSettingDlg::OnBnClickedButton9()
 	db = m_sql_db;
 	file.WriteDBInfo(host.GetBuffer(), user.GetBuffer(), pwd.GetBuffer(), db.GetBuffer(), m_sql_port);
 	MessageBox(_T("更改成功!"), _T("提示"), MB_ICONASTERISK);
+}
+
+
+void CSettingDlg::OnBnClickedButton10()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// 添加学科
+	UpdateData(TRUE);
+	CInfoFile file;
+	CString name, pwd;
+	file.ReadLogin(name, pwd);
+	if (m_pwd.IsEmpty())
+	{
+		MessageBox(TEXT("请输入密码后再进行操作。"), TEXT("警告"), MB_ICONWARNING);
+		return;
+	}
+	if (m_pwd != pwd)
+	{
+		MessageBox(TEXT("密码错误！"), TEXT("警告"), MB_ICONWARNING);
+		return;
+	}
+	if (m_sub.IsEmpty())
+	{
+		MessageBox(_T("请输入要添加的学科名!"), _T("警告"), MB_ICONWARNING);
+		return;
+	}
+	if (file.ConnectDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else if (file.ReadDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else
+		file.DisconnectDB();
+	for (vector<CString>::iterator it = file.subName.begin(); it != file.subName.end(); it++)
+	{
+		if (m_sub == *it)
+		{
+			MessageBox(_T("学科名重复，请重新输入!"), _T("警告"), MB_ICONWARNING);
+			return;
+		}
+	}
+	file.subName.push_back(m_sub);
+	if (file.ConnectDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else if (file.WriteDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else
+		file.DisconnectDB();
+	MessageBox(_T("添加成功!"), _T("提示"), MB_ICONASTERISK);
+	m_sub.Empty();
+	UpdateData(FALSE);
+}
+
+
+void CSettingDlg::OnBnClickedButton11()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// 删除学科
+	UpdateData(TRUE);
+	CInfoFile file;
+	CString name, pwd;
+	file.ReadLogin(name, pwd);
+	if (m_pwd.IsEmpty())
+	{
+		MessageBox(TEXT("请输入密码后再进行操作。"), TEXT("警告"), MB_ICONWARNING);
+		return;
+	}
+	if (m_pwd != pwd)
+	{
+		MessageBox(TEXT("密码错误！"), TEXT("警告"), MB_ICONWARNING);
+		return;
+	}
+	UINT flag = MessageBox(TEXT("是否删除该学科？\n请确认数据是否已经备份，该操作不可逆！"), TEXT("警告"), MB_YESNO | MB_ICONWARNING);
+	if (flag == IDNO)
+	{
+		m_pwd.Empty();
+		UpdateData(FALSE);
+		return;
+	}
+	if (file.ConnectDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else if (file.ReadDB() == FALSE)
+	{
+		file.ReadDocline();
+	}
+	else
+		file.DisconnectDB();
+	// 移除表头
+	int index = m_cbx.GetCurSel();
+	for (int i = index; i < file.subName.size() - 1; i++)
+	{
+		file.subName[i] = file.subName[i + 1];
+	}
+	file.subName.pop_back();
+	// 移除数据
+	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
+	{
+		for (int j = index; j < it->sub.size() - 1; j++)
+		{
+			it->sub[j] = it->sub[j + 1];
+		}
+		it->sub.pop_back();
+	}
+	if (file.ConnectDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else if (file.WriteDB() == FALSE)
+	{
+		file.WirteDocline();
+	}
+	else
+		file.DisconnectDB();
+	m_cbx.DeleteString(index);
+	m_cbx.SetCurSel(0);
+	m_pwd.Empty();
+	MessageBox(TEXT("删除成功！"), TEXT("警告"), MB_ICONWARNING);
+	UpdateData(FALSE);
 }

@@ -46,6 +46,12 @@ private:
 	CString m_sql_user;
 	CString m_sql_pwd;
 	CString m_sql_db;
+	CString m_sub;
+public:
+	afx_msg void OnBnClickedButton10();
+	afx_msg void OnBnClickedButton11();
+private:
+	CComboBox m_cbx;
 };
 
 

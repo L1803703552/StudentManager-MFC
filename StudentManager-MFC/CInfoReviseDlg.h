@@ -20,19 +20,22 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
-private:
-	CString m_id;
-	CString m_name;
-	int m_sub1;
-	int m_sub2;
-	list<msg>* list_bak;
-	CListCtrl* m_list;
-
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
-	void getListCtrl(CListCtrl* list);
-	void getData(list<msg>* ls, CListCtrl* lst);
+	void getData(list<msg>* ls, CListCtrl* lst, vector<CString>& dict);
+private:
+	CString m_id;
+	CString m_name;
+	list<msg>* list_bak;
+	CListCtrl* m_list;
+	CComboBox m_subs;
+	int m_scores;
+	vector<CString> subs;
+	vector<int> scores;
+public:
+	afx_msg void OnCbnSelchangeCombo1();
+	afx_msg void OnCbnDropdownCombo1();
 };

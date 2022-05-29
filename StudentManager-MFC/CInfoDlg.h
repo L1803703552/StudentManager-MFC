@@ -40,6 +40,7 @@ public:
 	afx_msg void OnBnClickedButton5();
 	afx_msg void OnBnClickedButton6();
 	afx_msg void OnBnClickedButton7();
+	afx_msg void OnBnClickedButton8();
 	afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
 private:
 	CListCtrl m_list;
@@ -50,10 +51,10 @@ private:
 	// 文本框控件
 	CDimEditCtrl m_EditCtrl;
 	CStatusBar* m_status_bar;
+	vector<CString> dictHead;// 表头
+	vector<CString> subName;// 学科名
 	// 设置状态栏
 	void SetStatusBarText(CString in);
-public:
-	afx_msg void OnBnClickedButton8();
 };
 
 

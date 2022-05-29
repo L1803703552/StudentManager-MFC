@@ -36,22 +36,16 @@ private:
 	CString m_id_1;
 	// 第一名姓名
 	CString m_name_1;
-	int m_sub1_1;
-	int m_sub2_1;
 	double m_ave_1;
 	int m_sum_1;
 	// 第二名学号
 	CString m_id_2;
 	CString m_name_2;
-	int m_sub1_2;
-	int m_sub2_2;
 	double m_ave_2;
 	int m_sum_2;
 	// 第三名学号
 	CString m_id_3;
 	CString m_name_3;
-	int m_sub1_3;
-	int m_sub2_3;
 	double m_ave_3;
 	int m_sum_3;
 };

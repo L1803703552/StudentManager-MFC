@@ -21,17 +21,20 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CString m_id;
-private:
-	CString m_name;
-	int m_sub1;
-	int m_sub2;
-	list<msg> *list_bak;
-	CListCtrl* m_list;
-public:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedOk();
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
-	void getData(list<msg>* ls, CListCtrl* lst);
+	void getData(list<msg>* ls, CListCtrl* lst, vector<CString> &dict);
+	afx_msg void OnCbnSelchangeCombo1();
+	afx_msg void OnCbnDropdownCombo1();
+private:
+	CString m_name;
+	CString m_id;
+	list<msg>* list_bak;
+	CListCtrl* m_list;
+	int m_scores;
+	CComboBox m_subs;
+	vector<CString> subs;
+	vector<int> scores;
 };
