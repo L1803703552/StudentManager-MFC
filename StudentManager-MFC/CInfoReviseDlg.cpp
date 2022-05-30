@@ -108,7 +108,7 @@ void CInfoReviseDlg::OnBnClickedOk()
 	if (m_infos.GetCount() != 0)
 	{
 		index = m_infos.GetCurSel() + 2;
-		m_info = (CString)infos[index].c_str();
+		infos[index] = CStringA(m_info);
 	}
 	int row;
 	POSITION pos = m_list->GetFirstSelectedItemPosition();
@@ -120,7 +120,7 @@ void CInfoReviseDlg::OnBnClickedOk()
 	}
 	for (list<msg>::iterator it = list_bak->begin(); it != list_bak->end(); it++)
 	{
-		if (m_id == (CString)it->id.c_str())
+		if (m_id == (CString)it->info[0].c_str())
 		{
 			it->info = infos;
 			it->sub = scores;

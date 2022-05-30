@@ -50,8 +50,6 @@ public:
 	// 写入学生信息
 	void WirteDocline();
 
-	// 添加学生信息
-	void Addline(char* buf);
 	MYSQL_RES* result;
 	MYSQL_ROW row;
 	MYSQL m_sqlCon;

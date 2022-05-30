@@ -167,7 +167,7 @@ static int CALLBACK MyCompareProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamS
 	}
 	else if (sort_column == 6)//第6列用double类型排序
 	{
-		// double型比较
+		// double 型比较
 		if (method)
 			return _tstof(lp1) > _tstof(lp2);
 		else
@@ -175,7 +175,7 @@ static int CALLBACK MyCompareProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamS
 	}
 	else
 	{
-		// int型比较
+		// int 型比较
 		if (method)
 			return _ttoi(lp1) - _ttoi(lp2);
 		else
@@ -404,7 +404,6 @@ void CInfoDlg::OnBnClickedButton6()
 		SetStatusBarText(_T("保存成功"));
 		file.DisconnectDB();
 	}
-	autoSave();
 }
 
 
