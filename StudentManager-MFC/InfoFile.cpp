@@ -241,47 +241,148 @@ void CInfoFile::WriteDBInfo(char* host, char* user, char* pwd, char* db, int por
 BOOL CInfoFile::ReadDB()
 {
 	ls.clear();
-	mysql_query(&m_sqlCon, "select * from stumanager;");
-	result = mysql_store_result(&m_sqlCon);
-	if (!result)
+	stuInfo.clear();
+	subName.clear();
+	/*----------读取信息字段----------*/
+	mysql_query(&m_sqlCon, "show full fields from info");
+	resInfo = mysql_store_result(&m_sqlCon);
+	if (!resInfo)
 		return FALSE;
-	msg tmp;
-	while (row = mysql_fetch_row(result))
+	while (rowInfo = mysql_fetch_row(resInfo))
 	{
-		tmp.id = row[0];
-		tmp.name = row[1];
-		tmp.sub1 = atoi(row[2]);
-		tmp.sub2 = atoi(row[3]);
+		stuInfo.push_back(CString(rowInfo[0]));
+	}
+	/*----------读取学科名称----------*/
+	mysql_query(&m_sqlCon, "show full fields from score");
+	resSub = mysql_store_result(&m_sqlCon);
+	if (!resSub)
+		return FALSE;
+	rowSub = mysql_fetch_row(resSub);// 跳过主键“序号”
+	while (rowSub = mysql_fetch_row(resSub))
+	{
+		subName.push_back(CString(rowSub[0]));
+	}
+	/*----------读取信息内容----------*/
+	mysql_query(&m_sqlCon, "select * from info;");
+	resInfo = mysql_store_result(&m_sqlCon);
+	if (!resInfo)
+		return FALSE;
+	mysql_query(&m_sqlCon, "select * from score;");
+	resSub = mysql_store_result(&m_sqlCon);
+	if (!resSub)
+		return FALSE;
+	/*----------读取数据----------*/
+	while (rowInfo = mysql_fetch_row(resInfo))
+	{
+		msg tmp;
+		// 读取学生信息
+		int j = 0;
+		for (vector<CString>::iterator it = stuInfo.begin(); it != stuInfo.end(); it++)
+		{
+			string str;
+			str = rowInfo[j];
+			if (str == "")
+				tmp.info.push_back("#NULL");
+			else
+				tmp.info.push_back(str);
+			j++;
+		}
+		// 读取学科信息
+		rowSub = mysql_fetch_row(resSub);
+		j = 1;
+		for (vector<CString>::iterator it = subName.begin(); it != subName.end(); it++)
+		{
+			string str;
+			str = rowSub[j];
+			if (str == "")
+				tmp.sub.push_back(0);
+			else
+				tmp.sub.push_back(atoi(rowSub[j]));
+			j++;
+		}
 		ls.push_back(tmp);
 	}
-	mysql_free_result(result);
 	return TRUE;
 }
 
 // 写入到数据库
 BOOL CInfoFile::WriteDB()
 {
-	int flag;
-	// 删除原记录
-	flag = mysql_query(&m_sqlCon, "drop table stumanager;");
+	int flag=0;
+	/*----------删除原记录----------*/
+	flag = mysql_query(&m_sqlCon, "drop table info;");
 	if (flag)
 		return FALSE;
-	// 创建表头
-	flag = mysql_query(&m_sqlCon, "create table if not exists stumanager (\
-				`学号` varchar (255) NOT NULL DEFAULT '',\
-				`姓名` varchar (255) NULL DEFAULT '',\
-				`成绩1` int NULL,\
-				`成绩2` int NULL,\
-				PRIMARY KEY (`学号`)\
-	);");
+	flag = mysql_query(&m_sqlCon, "drop table score;");
 	if (flag)
 		return FALSE;
-	// 插入记录
-	char sqlhead[1024] = { 0 }, sqlstr[1024] = { 0 };
-	snprintf(sqlhead, 1024, "insert into stumanager (学号 ,姓名 ,成绩1 ,成绩2 ) values( ");
+	/*----------创建学生信息字段----------*/
+	char sqlheadInfo[1024] = { 0 }, sqlheadSub[1024] = { 0 }, sqlstr[1024] = { 0 };
+	snprintf(sqlstr, 1024, "create table if not exists info (");
+	snprintf(sqlstr, 1024, "%s `%s` varchar(255) NOT NULL DEFAULT ''", sqlstr, CStringA(stuInfo[0]));
+	for (int i = 1; i < stuInfo.size(); i++)
+	{
+		snprintf(sqlstr, 1024, "%s ,`%s` varchar(255) NULL DEFAULT ''", sqlstr, CStringA(stuInfo[i]));
+	}
+	snprintf(sqlstr, 1024, "%s ,PRIMARY KEY (`%s`));", sqlstr, CStringA(stuInfo[0]));
+	flag = mysql_query(&m_sqlCon, sqlstr);
+	if (flag)
+	{
+		AfxMessageBox(CString(mysql_error(&m_sqlCon)));
+		return FALSE;
+	}
+	/*----------创建学生成绩字段----------*/
+	snprintf(sqlstr, 1024, "create table if not exists score (");
+	snprintf(sqlstr, 1024, "%s `%s` int NOT NULL AUTO_INCREMENT", sqlstr, "序号");
+	for (int i = 0; i < subName.size(); i++)
+	{
+		snprintf(sqlstr, 1024, "%s ,\n`%s` int NULL", sqlstr, CStringA(subName[i]));
+	}
+	snprintf(sqlstr, 1024, "%s ,\nPRIMARY KEY (`%s`));", sqlstr, "序号");
+	flag = mysql_query(&m_sqlCon, sqlstr);
+	if (flag)
+	{
+		AfxMessageBox(CString(mysql_error(&m_sqlCon)));
+		return FALSE;
+	}
+	/*----------创建命令头----------*/
+	// 学生信息命令头
+	snprintf(sqlheadInfo, 1024, "insert into info (%s",CStringA(stuInfo[0]));
+	for (int i = 1; i < stuInfo.size(); i++)
+	{
+		snprintf(sqlheadInfo, 1024, "%s ,%s", sqlheadInfo, CStringA(stuInfo[i]));
+	}
+	snprintf(sqlheadInfo, 1024, "%s) values(",sqlheadInfo);
+	// 学生成绩命令头
+	snprintf(sqlheadSub, 1024, "insert into score (%s", CStringA(subName[0]));
+	for (int i = 1; i < subName.size(); i++)
+	{
+		snprintf(sqlheadSub, 1024, "%s ,%s", sqlheadSub, CStringA(subName[i]));
+	}
+	snprintf(sqlheadSub, 1024, "%s) values(", sqlheadSub);
+	/*----------开始写入----------*/
 	for (list<msg>::iterator it = ls.begin(); it != ls.end(); it++)
 	{
-		snprintf(sqlstr, 1024, "%s '%s', '%s', %d, %d );", sqlhead, it->id.c_str(), it->name.c_str(), it->sub1, it->sub2);
+		snprintf(sqlstr, 1024, "%s'%s'", sqlheadInfo,it->info[0].c_str());
+		for (vector<string>::iterator its = it->info.begin() + 1; its != it->info.end(); its++)
+		{
+			if (*its == "")
+			{
+				snprintf(sqlstr, 1024, "%s ,'%s'", sqlstr,"#NULL");
+			}
+			else
+				snprintf(sqlstr, 1024, "%s ,'%s'", sqlstr, its->c_str());
+		}
+		snprintf(sqlstr, 1024, "%s);", sqlstr);
+		flag = mysql_real_query(&m_sqlCon, sqlstr, strlen(sqlstr));
+		if (flag)
+			return FALSE;
+		snprintf(sqlstr, 1024, "%s%d", sqlheadSub, it->sub[0]);
+		for (vector<int>::iterator its = it->sub.begin() + 1; its != it->sub.end(); its++)
+		{
+			snprintf(sqlstr, 1024, "%s ,%d", sqlstr, *its);
+		}
+		snprintf(sqlstr, 1024, "%s);", sqlstr);
 		flag = mysql_real_query(&m_sqlCon, sqlstr, strlen(sqlstr));
 		if (flag)
 			return FALSE;

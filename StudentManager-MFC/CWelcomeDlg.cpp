@@ -4,7 +4,7 @@
 #include "pch.h"
 #include "StudentManager-MFC.h"
 #include "CWelcomeDlg.h"
-
+#include "InfoFile.h"
 
 // CWelcomeDlg
 
@@ -28,6 +28,7 @@ void CWelcomeDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CWelcomeDlg, CFormView)
+	ON_BN_CLICKED(IDC_BUTTON1, &CWelcomeDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -63,3 +64,16 @@ void CWelcomeDlg::OnInitialUpdate()
 
 }
 
+
+
+void CWelcomeDlg::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CInfoFile file;
+	if (file.ConnectDB() == FALSE)
+		MessageBox(_T("连接失败！"));
+	if (file.ReadDB() == FALSE)
+		MessageBox(_T("读取失败！"));
+	if (file.WriteDB() == FALSE)
+		MessageBox(_T("写入失败！"));
+}

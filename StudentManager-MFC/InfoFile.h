@@ -50,8 +50,12 @@ public:
 	// 写入学生信息
 	void WirteDocline();
 
+	MYSQL_RES* resInfo;
+	MYSQL_RES* resSub;
 	MYSQL_RES* result;
 	MYSQL_ROW row;
+	MYSQL_ROW rowInfo;
+	MYSQL_ROW rowSub;
 	MYSQL m_sqlCon;
 	// 连接数据库
 	BOOL ConnectDB();
