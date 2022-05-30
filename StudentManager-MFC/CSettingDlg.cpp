@@ -394,6 +394,10 @@ void CSettingDlg::OnBnClickedButton10()
 	}
 	file.subName.push_back(m_sub);
 	m_cbxSub.AddString(m_sub);
+	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
+	{
+		it->sub.push_back(0);
+	}
 	if (file.ConnectDB() == FALSE)
 	{
 		file.WirteDocline();
@@ -530,6 +534,10 @@ void CSettingDlg::OnBnClickedButton12()
 	}
 	file.stuInfo.push_back(m_info);
 	m_cbxInfo.AddString(m_info);
+	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
+	{
+		it->info.push_back("#NULL");
+	}
 	if (file.ConnectDB() == FALSE)
 	{
 		file.WirteDocline();

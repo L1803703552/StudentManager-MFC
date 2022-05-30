@@ -20,10 +20,6 @@ struct msg
 {
 	vector<string> info;// 学号、姓名等字段
 	vector<int> sub;// 成绩字段
-	string id;		// 学号
-	string name;	// 姓名
-	int sub1;		// 成绩1
-	int sub2;		// 成绩2
 };
 
 class CInfoFile

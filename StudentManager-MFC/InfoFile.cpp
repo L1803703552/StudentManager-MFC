@@ -311,11 +311,7 @@ BOOL CInfoFile::WriteDB()
 	int flag=0;
 	/*----------删除原记录----------*/
 	flag = mysql_query(&m_sqlCon, "drop table info;");
-	if (flag)
-		return FALSE;
 	flag = mysql_query(&m_sqlCon, "drop table score;");
-	if (flag)
-		return FALSE;
 	/*----------创建学生信息字段----------*/
 	char sqlheadInfo[1024] = { 0 }, sqlheadSub[1024] = { 0 }, sqlstr[1024] = { 0 };
 	snprintf(sqlstr, 1024, "create table if not exists info (");
@@ -347,17 +343,17 @@ BOOL CInfoFile::WriteDB()
 	}
 	/*----------创建命令头----------*/
 	// 学生信息命令头
-	snprintf(sqlheadInfo, 1024, "insert into info (%s",CStringA(stuInfo[0]));
+	snprintf(sqlheadInfo, 1024, "insert into info (`%s`",CStringA(stuInfo[0]));
 	for (int i = 1; i < stuInfo.size(); i++)
 	{
-		snprintf(sqlheadInfo, 1024, "%s ,%s", sqlheadInfo, CStringA(stuInfo[i]));
+		snprintf(sqlheadInfo, 1024, "%s ,`%s`", sqlheadInfo, CStringA(stuInfo[i]));
 	}
 	snprintf(sqlheadInfo, 1024, "%s) values(",sqlheadInfo);
 	// 学生成绩命令头
-	snprintf(sqlheadSub, 1024, "insert into score (%s", CStringA(subName[0]));
+	snprintf(sqlheadSub, 1024, "insert into score (`%s`", CStringA(subName[0]));
 	for (int i = 1; i < subName.size(); i++)
 	{
-		snprintf(sqlheadSub, 1024, "%s ,%s", sqlheadSub, CStringA(subName[i]));
+		snprintf(sqlheadSub, 1024, "%s ,`%s`", sqlheadSub, CStringA(subName[i]));
 	}
 	snprintf(sqlheadSub, 1024, "%s) values(", sqlheadSub);
 	/*----------开始写入----------*/
