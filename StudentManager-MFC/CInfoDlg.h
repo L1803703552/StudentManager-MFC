@@ -53,6 +53,7 @@ private:
 	CStatusBar* m_status_bar;
 	vector<CString> dictHead;// 表头
 	vector<CString> subName;// 学科名
+	vector<CString> stuInfo;// 信息字段
 	// 设置状态栏
 	void SetStatusBarText(CString in);
 };

@@ -25,7 +25,11 @@ public:
 	afx_msg void OnBnClickedCancel();
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
-	void getData(list<msg>* ls, CListCtrl* lst, vector<CString>& dict);
+	void getData(list<msg>* ls, CListCtrl* lst, vector<CString>& dict, vector<CString>& inf);
+	afx_msg void OnCbnSelchangeCombo1();
+	afx_msg void OnCbnDropdownCombo1();
+	afx_msg void OnCbnSelchangeCombo2();
+	afx_msg void OnCbnDropdownCombo2();
 private:
 	CString m_id;
 	CString m_name;
@@ -35,7 +39,8 @@ private:
 	int m_scores;
 	vector<CString> subs;
 	vector<int> scores;
-public:
-	afx_msg void OnCbnSelchangeCombo1();
-	afx_msg void OnCbnDropdownCombo1();
+	vector<CString> stuinfo;
+	vector<string> infos;
+	CComboBox m_infos;
+	CString m_info;
 };

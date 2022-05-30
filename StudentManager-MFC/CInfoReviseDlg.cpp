@@ -16,6 +16,7 @@ CInfoReviseDlg::CInfoReviseDlg(CWnd* pParent /*=nullptr*/)
 	, m_id(_T(""))
 	, m_name(_T(""))
 	, m_scores(0)
+	, m_info(_T(""))
 {
 
 }
@@ -31,6 +32,8 @@ void CInfoReviseDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT2, m_name);
 	DDX_Control(pDX, IDC_COMBO1, m_subs);
 	DDX_Text(pDX, IDC_EDIT3, m_scores);
+	DDX_Control(pDX, IDC_COMBO2, m_infos);
+	DDX_Text(pDX, IDC_EDIT4, m_info);
 }
 
 
@@ -39,6 +42,8 @@ BEGIN_MESSAGE_MAP(CInfoReviseDlg, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &CInfoReviseDlg::OnBnClickedCancel)
 	ON_CBN_SELCHANGE(IDC_COMBO1, &CInfoReviseDlg::OnCbnSelchangeCombo1)
 	ON_CBN_DROPDOWN(IDC_COMBO1, &CInfoReviseDlg::OnCbnDropdownCombo1)
+	ON_CBN_SELCHANGE(IDC_COMBO2, &CInfoReviseDlg::OnCbnSelchangeCombo2)
+	ON_CBN_DROPDOWN(IDC_COMBO2, &CInfoReviseDlg::OnCbnDropdownCombo2)
 END_MESSAGE_MAP()
 
 
@@ -58,10 +63,22 @@ BOOL CInfoReviseDlg::OnInitDialog()
 	row = (int)m_list->GetNextSelectedItem(pos);
 	//获取第row第0列的内容，并保存到str中
 	int j = 0;
+	string t;
 	str = m_list->GetItemText(row, j++);
-	m_id = CStringA(str);
+	m_id = str;
 	str = m_list->GetItemText(row, j++);
-	m_name = CStringA(str);
+	m_name = str;
+	t = CStringA(m_id);
+	infos.push_back(t);
+	t = CStringA(m_name);
+	infos.push_back(t);
+	for (vector<CString>::iterator it = stuinfo.begin() + 2; it != stuinfo.end(); it++)
+	{
+		m_infos.AddString(*it);
+		str = m_list->GetItemText(row, j++);
+		t = CStringA(str);
+		infos.push_back(t);
+	}
 	for (vector<CString>::iterator it = subs.begin(); it != subs.end(); it++)
 	{
 		m_subs.AddString(*it);
@@ -70,6 +87,11 @@ BOOL CInfoReviseDlg::OnInitDialog()
 	}
 	m_subs.SetCurSel(0);
 	m_scores = scores[0];
+	if (m_infos.GetCount() != 0)
+	{
+		m_infos.SetCurSel(0);
+		m_info = (CString)infos[2].c_str();
+	}
 	UpdateData(FALSE);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -82,7 +104,12 @@ void CInfoReviseDlg::OnBnClickedOk()
 	// 拿到最后的值
 	int index = m_subs.GetCurSel();
 	scores[index] = m_scores;
-
+	infos[1] = CStringA(m_name);
+	if (m_infos.GetCount() != 0)
+	{
+		index = m_infos.GetCurSel() + 2;
+		m_info = (CString)infos[index].c_str();
+	}
 	int row;
 	POSITION pos = m_list->GetFirstSelectedItemPosition();
 	row = (int)m_list->GetNextSelectedItem(pos);
@@ -95,15 +122,17 @@ void CInfoReviseDlg::OnBnClickedOk()
 	{
 		if (m_id == (CString)it->id.c_str())
 		{
-			it->name = CStringA(m_name);
+			it->info = infos;
 			it->sub = scores;
 			break;
 		}
 	}
 	CString str;
-	int c = 0, sum = 0;
-	m_list->SetItemText(row, c++, m_id);
-	m_list->SetItemText(row, c++, m_name);
+	int c = 1, sum = 0;
+	for (vector<string>::iterator it = infos.begin() + 1; it != infos.end(); it++)
+	{
+		m_list->SetItemText(row, c++, (CString)it->c_str());
+	}
 	for (vector<int>::iterator it = scores.begin(); it != scores.end(); it++)
 	{
 		sum += *it;
@@ -134,11 +163,12 @@ void CInfoReviseDlg::OnOK()
 }
 
 
-void CInfoReviseDlg::getData(list<msg>* ls, CListCtrl* lst, vector<CString>& dict)
+void CInfoReviseDlg::getData(list<msg>* ls, CListCtrl* lst, vector<CString>& dict, vector<CString>& inf)
 {
 	list_bak = ls;
 	m_list = lst;
 	subs = dict;
+	stuinfo = inf;
 }
 
 
@@ -158,4 +188,29 @@ void CInfoReviseDlg::OnCbnDropdownCombo1()
 	UpdateData(TRUE);
 	int index = m_subs.GetCurSel();
 	scores[index] = m_scores;
+}
+
+
+void CInfoReviseDlg::OnCbnSelchangeCombo2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (m_infos.GetCount() != 0)
+	{
+		int index = m_infos.GetCurSel() + 2;
+		m_info = (CString)infos[index].c_str();
+	}
+	UpdateData(FALSE);
+}
+
+
+void CInfoReviseDlg::OnCbnDropdownCombo2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (m_infos.GetCount() != 0)
+	{
+		int index = m_infos.GetCurSel() + 2;
+		infos[index] = CStringA(m_info);
+	}
 }

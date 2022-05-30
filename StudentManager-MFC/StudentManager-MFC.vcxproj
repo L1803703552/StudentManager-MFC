@@ -201,6 +201,7 @@
     <ClInclude Include="CGoodDlg.h" />
     <ClInclude Include="CInfoAddDlg.h" />
     <ClInclude Include="CInfoDlg.h" />
+    <ClInclude Include="CInfoImportDlg.h" />
     <ClInclude Include="CInfoReviseDlg.h" />
     <ClInclude Include="CLoginDlg.h" />
     <ClInclude Include="CSelectView.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="CGoodDlg.cpp" />
     <ClCompile Include="CInfoAddDlg.cpp" />
     <ClCompile Include="CInfoDlg.cpp" />
+    <ClCompile Include="CInfoImportDlg.cpp" />
     <ClCompile Include="CInfoReviseDlg.cpp" />
     <ClCompile Include="CLoginDlg.cpp" />
     <ClCompile Include="CSelectView.cpp" />

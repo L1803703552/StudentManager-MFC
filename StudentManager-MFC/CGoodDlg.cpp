@@ -112,8 +112,8 @@ void CGoodDlg::OnInitialUpdate()
 	it = list_data.begin();// 第一名信息
 	if (it == list_data.end())
 		return;
-	m_id_1 = (CString)it->id.c_str();
-	m_name_1 = (CString)it->name.c_str();
+	m_id_1 = (CString)it->info.at(0).c_str();
+	m_name_1 = (CString)it->info.at(1).c_str();
 	for (vector<int>::iterator its = it->sub.begin(); its != it->sub.end(); its++)
 	{
 		m_sum_1 += *its;
@@ -124,8 +124,8 @@ void CGoodDlg::OnInitialUpdate()
 
 	if (it == list_data.end())// 第二名信息
 		return;
-	m_id_2 = (CString)it->id.c_str();
-	m_name_2 = (CString)it->name.c_str();
+	m_id_2 = (CString)it->info.at(0).c_str();
+	m_name_2 = (CString)it->info.at(1).c_str();
 	for (vector<int>::iterator its = it->sub.begin(); its != it->sub.end(); its++)
 	{
 		m_sum_2 += *its;
@@ -136,8 +136,8 @@ void CGoodDlg::OnInitialUpdate()
 
 	if (it == list_data.end())// 第三名信息
 		return;
-	m_id_3 = (CString)it->id.c_str();
-	m_name_3 = (CString)it->name.c_str();
+	m_id_3 = (CString)it->info.at(0).c_str();
+	m_name_3 = (CString)it->info.at(1).c_str();
 	for (vector<int>::iterator its = it->sub.begin(); its != it->sub.end(); its++)
 	{
 		m_sum_3 += *its;

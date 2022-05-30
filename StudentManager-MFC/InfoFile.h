@@ -11,12 +11,14 @@
 #include <vector>
 
 #define _F_LOGIN "./login.ini"
-#define _F_STOCK "./stock.txt"
+#define _F_STOCK "./score.txt"
+#define _F_INFO "./info.txt"
 
 using namespace std;
 
 struct msg
 {
+	vector<string> info;// 学号、姓名等字段
 	vector<int> sub;// 成绩字段
 	string id;		// 学号
 	string name;	// 姓名
@@ -66,6 +68,7 @@ public:
 	// 写入数据库
 	BOOL WriteDB();
 	vector<CString> subName; // 学科名称
+	vector<CString> stuInfo; //学生信息
 	vector<CString> head; // 表头
 	list<msg> ls;	//存储链表
 };

@@ -7,6 +7,7 @@
 #include <iomanip>
 #include "CInfoAddDlg.h"
 #include "CInfoReviseDlg.h"
+#include "CInfoImportDlg.h"
 
 int sort_column; // 记录点击的列
 bool method = true; // 记录比较方法
@@ -97,11 +98,14 @@ void CInfoDlg::OnInitialUpdate()
 		file.DisconnectDB();
 	}
 	// 初始化表头、学科名
+	stuInfo = file.stuInfo;
 	subName = file.subName;
 	dictHead.clear();
-	dictHead.push_back(_T("学号"));
-	dictHead.push_back(_T("姓名"));
-	for (vector<CString>::iterator it = file.subName.begin(); it != file.subName.end(); it++)
+	for (vector<CString>::iterator it = stuInfo.begin(); it != stuInfo.end(); it++)
+	{
+		dictHead.push_back(*it);
+	}
+	for (vector<CString>::iterator it = subName.begin(); it != subName.end(); it++)
 	{
 		dictHead.push_back(*it);
 	}
@@ -121,9 +125,12 @@ void CInfoDlg::OnInitialUpdate()
 	CString str;
 	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
 	{
-		m_list.InsertItem(i, (CString)it->id.c_str());//主键是学号
+		m_list.InsertItem(i, (CString)it->info.at(0).c_str());//主键是学号
 		int column = 1;
-		m_list.SetItemText(i, column++, (CString)it->name.c_str());//姓名
+		for (vector<string>::iterator its = it->info.begin() + 1; its != it->info.end(); its++)
+		{
+			m_list.SetItemText(i, column++, (CString)its->c_str());
+		}
 		int sum = 0;
 		for (vector<int>::iterator its = it->sub.begin(); its != it->sub.end(); its++)//每一门学科的成绩
 		{
@@ -201,7 +208,7 @@ void CInfoDlg::OnBnClickedButton1()
 	// TODO: 在此添加控件通知处理程序代码
 	// 添加信息
 	CInfoAddDlg dlg;
-	dlg.getData(&list_bak, &m_list, subName);
+	dlg.getData(&list_bak, &m_list, subName, stuInfo);
 	dlg.DoModal();
 	UpdateData(FALSE);
 	SetStatusBarText(_T("就绪"));
@@ -238,14 +245,16 @@ void CInfoDlg::OnBnClickedButton2()
 	for (int i = (int)arDelItem.GetUpperBound(); i >= 0; i--)
 	{
 		int iSel = arDelItem[i];
+		int t = 0;
 		str = m_list.GetItemText(iSel, 0);
 		for (list<msg>::iterator it = list_bak.begin(); it != list_bak.end(); it++)
 		{
-			if (str == (CString)it->id.c_str())
+			if (str == (CString)it->info.at(0).c_str())
 			{
 				list_bak.erase(it);
 				break;
 			}
+			t++;
 		}
 		m_list.DeleteItem(iSel);
 
@@ -268,7 +277,7 @@ void CInfoDlg::OnBnClickedButton3()
 		return;
 	}
 	CInfoReviseDlg dlg;
-	dlg.getData(&list_bak, &m_list, subName);
+	dlg.getData(&list_bak, &m_list, subName, stuInfo);
 	dlg.DoModal();
 	UpdateData(FALSE);
 	SetStatusBarText(_T("就绪"));
@@ -287,7 +296,7 @@ void CInfoDlg::OnBnClickedButton4()
 		gReadFilePathName = fileDlg.GetPathName();
 		//AfxMessageBox(_T("OK"));
 		ofs.open(gReadFilePathName.GetBuffer(), ios::out | ios::trunc);
-		ofs << "学号";
+		ofs << CStringA(dictHead.at(0));
 		for (vector<CString>::iterator it = dictHead.begin() + 1; it != dictHead.end(); it++)
 		{
 			ofs << "," << CStringA(*it);
@@ -325,11 +334,10 @@ void CInfoDlg::OnBnClickedButton5()
 	list<msg> list_temp;
 	list_temp.clear();
 	// 查找
-	string tmp;
+	string tmp= CStringA(m_edit);
 	for (list<msg>::iterator it = list_bak.begin(); it!=list_bak.end(); it++)
 	{
-		tmp = CStringA(m_edit);
-		if (it->id.find(tmp) != -1 || it->name.find(tmp) != -1)
+		if (it->info.at(0).find(tmp) != -1 || it->info.at(1).find(tmp) != -1)
 		{
 			list_temp.push_back(*it);
 		}
@@ -346,9 +354,12 @@ void CInfoDlg::OnBnClickedButton5()
 	CString str;
 	for (list<msg>::iterator it = list_temp.begin(); it != list_temp.end(); it++)
 	{
-		m_list.InsertItem(i, (CString)it->id.c_str());//主键是学号
+		m_list.InsertItem(i, (CString)it->info.at(0).c_str());//主键是学号
 		int column = 1;
-		m_list.SetItemText(i, column++, (CString)it->name.c_str());//姓名
+		for (vector<string>::iterator its = it->info.begin() + 1; its != it->info.end(); its++)
+		{
+			m_list.SetItemText(i, column++, (CString)its->c_str());
+		}
 		int sum = 0;
 		for (vector<int>::iterator its = it->sub.begin(); its != it->sub.end(); its++)//每一门学科的成绩
 		{
@@ -375,6 +386,8 @@ void CInfoDlg::OnBnClickedButton6()
 	// 保存
 	CInfoFile file;
 	file.ls = list_bak;
+	file.stuInfo = stuInfo;
+	file.subName = subName;
 	file.head = dictHead;
 	if (file.ConnectDB() == FALSE)
 	{
@@ -405,9 +418,12 @@ void CInfoDlg::OnBnClickedButton7()
 	CString str;
 	for (list<msg>::iterator it = list_bak.begin(); it != list_bak.end(); it++)
 	{
-		m_list.InsertItem(i, (CString)it->id.c_str());//主键是学号
+		m_list.InsertItem(i, (CString)it->info.at(0).c_str());//主键是学号
 		int column = 1;
-		m_list.SetItemText(i, column++, (CString)it->name.c_str());//姓名
+		for (vector<string>::iterator its = it->info.begin() + 1; its != it->info.end(); its++)
+		{
+			m_list.SetItemText(i, column++, (CString)its->c_str());
+		}
 		int sum = 0;
 		for (vector<int>::iterator its = it->sub.begin(); its != it->sub.end(); its++)//每一门学科的成绩
 		{
@@ -428,22 +444,23 @@ void CInfoDlg::OnBnClickedButton7()
 
 void CInfoDlg::autoSave()
 {
-	// 自动保存
+	// 自动保存当前显示的内容
 	UpdateData(TRUE);
 	CString str;
 	list_bak.clear();
-	int subCount = dictHead.size() - 4;
 	int num = m_list.GetItemCount();
 	for (int i = 0; i < num; i++)
 	{
 		msg tmp;
-		str = m_list.GetItemText(i, 0);
-		tmp.id = CStringA(str);
-		str = m_list.GetItemText(i, 1);
-		tmp.name = CStringA(str);
-		for (int j = 0; j < subCount; j++)
+		for (int j = 0; j < stuInfo.size(); j++)
 		{
-			str = m_list.GetItemText(i, j + 2);
+			str = m_list.GetItemText(i, j);
+			string s = CStringA(str);
+			tmp.info.push_back(s);
+		}
+		for (int j = 0; j < subName.size(); j++)
+		{
+			str = m_list.GetItemText(i, j + stuInfo.size());
 			tmp.sub.push_back(_ttoi(str));
 		}
 		list_bak.push_back(tmp);
@@ -471,61 +488,16 @@ void CInfoDlg::OnBnClickedButton8()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 批量导入
-	CString gReadFilePathName;
-	CFileDialog fileDlg(true, _T("txt"), _T(""), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("文本文档 (*.txt)|*.txt|Excel逗号分隔表格 (*.csv)|*.csv|All File (*.*)|*.*||"), NULL);
-	if (fileDlg.DoModal() == IDOK)    //弹出对话框
+	CInfoImportDlg dlg;
+	dlg.getData(&list_bak, &m_list, stuInfo, subName);
+	dlg.DoModal();
+	CString str;
+	if (dlg.ErrorCount > 0)
 	{
-		gReadFilePathName = fileDlg.GetPathName();//得到完整的文件名和目录名拓展名
-		//MessageBox(gReadFilePathName);
-		ifstream ifs(gReadFilePathName.GetBuffer());
-		char buf[1024] = { 0 };
-		//取出表头
-		ifs.getline(buf, sizeof(buf));
-		//验证文件有效性
-		vector<CString> isRight;
-		char* head = strtok(buf, ",");
-		isRight.push_back(CString(head));
-		while (head != NULL)
-		{
-			head = strtok(NULL, ",");
-			if (head == NULL)
-				break;
-			isRight.push_back(CString(head));
-		}
-		isRight.push_back(CString("平均分"));//加上后两段来对表头进行比较
-		isRight.push_back(CString("总分"));
-		if (isRight != dictHead)
-		{
-			MessageBox(_T("文件类型不匹配！\n请注意，导出的文件无法进行导入！"), _T("警告"), MB_ICONWARNING);
-			return;
-		}
-		/*----------验证结束----------*/
-		while (!ifs.eof()) //没到文件结尾
-		{
-			msg tmp;
-			ifs.getline(buf, sizeof(buf));
-			// AfxMessageBox(CString(buf));
-			char* sst = strtok(buf, ",");
-			if (sst != NULL)
-				tmp.id = sst; //学号
-			else
-				break;
-			sst = strtok(NULL, ",");
-			tmp.name = sst;	//姓名
-			int sum = 0;
-			for (int i = 0; i < dictHead.size() - 2 - 2; i++)//读取每个学科成绩
-			{
-				sst = strtok(NULL, ",");
-				if (sst == NULL)
-					tmp.sub.push_back(0);
-				else
-					tmp.sub.push_back(atoi(sst));
-			}
-
-			list_bak.push_back(tmp); //放在链表的后面
-		}
-
-		ifs.close(); //关闭文件
-		OnBnClickedButton7();
+		str.Format(_T("%d个学生导入失败！\n原因：学号重复"), dlg.ErrorCount);
+		MessageBox(str, _T("警告"), MB_ICONWARNING);
 	}
+	else
+		MessageBox(_T("导入成功！"), _T("警告"), MB_ICONASTERISK);
+	OnBnClickedButton7();
 }

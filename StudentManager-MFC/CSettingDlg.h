@@ -28,12 +28,16 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedButton2();
 	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButton8();
 	afx_msg void OnBnClickedButton9();
+	afx_msg void OnBnClickedButton10();
+	afx_msg void OnBnClickedButton11();
+	afx_msg void OnBnClickedButton12();
+	afx_msg void OnBnClickedButton13();
 private:
 	CString m_name;
 	CString m_new_pwd;
@@ -47,11 +51,11 @@ private:
 	CString m_sql_pwd;
 	CString m_sql_db;
 	CString m_sub;
-public:
-	afx_msg void OnBnClickedButton10();
-	afx_msg void OnBnClickedButton11();
-private:
-	CComboBox m_cbx;
+	CComboBox m_cbxSub;
+	CString m_info;
+	CComboBox m_cbxInfo;
+	CButton m_btnDelSub;
+	CButton m_btnDelInfo;
 };
 
 
