@@ -28,7 +28,7 @@ void CWelcomeDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CWelcomeDlg, CFormView)
-	ON_BN_CLICKED(IDC_BUTTON1, &CWelcomeDlg::OnBnClickedButton1)
+
 END_MESSAGE_MAP()
 
 
@@ -62,18 +62,4 @@ void CWelcomeDlg::OnInitialUpdate()
 	m_font2.CreatePointFont(110, _T("黑体"));
 	m_text2.SetFont(&m_font2);
 
-}
-
-
-
-void CWelcomeDlg::OnBnClickedButton1()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CInfoFile file;
-	if (file.ConnectDB() == FALSE)
-		MessageBox(_T("连接失败！"));
-	if (file.ReadDB() == FALSE)
-		MessageBox(_T("读取失败！"));
-	if (file.WriteDB() == FALSE)
-		MessageBox(_T("写入失败！"));
 }

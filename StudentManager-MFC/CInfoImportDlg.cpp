@@ -15,6 +15,7 @@ CInfoImportDlg::CInfoImportDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(DIALOG_IMPORT, pParent)
 {
 	ErrorCount = 0;
+	isOK = 0;
 }
 
 CInfoImportDlg::~CInfoImportDlg()
@@ -163,5 +164,6 @@ void CInfoImportDlg::OnBnClickedOk()
 		list_bak->push_back(tmp); //放在链表的后面
 	}
 	list_bak->pop_back();//删除最后空行
+	isOK = 1;
 	CDialogEx::OnOK();
 }

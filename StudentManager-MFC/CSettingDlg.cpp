@@ -392,6 +392,14 @@ void CSettingDlg::OnBnClickedButton10()
 			return;
 		}
 	}
+	for (vector<CString>::iterator it = file.stuInfo.begin(); it != file.stuInfo.end(); it++)
+	{
+		if (m_sub == *it)
+		{
+			MessageBox(_T("字段名重复，请重新输入!"), _T("警告"), MB_ICONWARNING);
+			return;
+		}
+	}
 	file.subName.push_back(m_sub);
 	m_cbxSub.AddString(m_sub);
 	for (list<msg>::iterator it = file.ls.begin(); it != file.ls.end(); it++)
@@ -525,6 +533,14 @@ void CSettingDlg::OnBnClickedButton12()
 	else
 		file.DisconnectDB();
 	for (vector<CString>::iterator it = file.stuInfo.begin(); it != file.stuInfo.end(); it++)
+	{
+		if (m_info == *it)
+		{
+			MessageBox(_T("字段名重复，请重新输入!"), _T("警告"), MB_ICONWARNING);
+			return;
+		}
+	}
+	for (vector<CString>::iterator it = file.subName.begin(); it != file.subName.end(); it++)
 	{
 		if (m_info == *it)
 		{

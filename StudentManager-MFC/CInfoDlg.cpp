@@ -78,7 +78,7 @@ void CInfoDlg::OnInitialUpdate()
 	// 状态栏设置
 	m_status_bar = ((CMainFrame*)AfxGetMainWnd())->MainFrameGetStBar();
 	SetStatusBarText(_T("就绪"));
-	// 添加表头
+	// 设置表格风格
 	m_list.SetExtendedStyle(m_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	// 读取文件或数据库
 	CInfoFile file;
@@ -111,6 +111,7 @@ void CInfoDlg::OnInitialUpdate()
 	}
 	dictHead.push_back(_T("平均分"));
 	dictHead.push_back(_T("总分"));
+	// 添加表头
 	for (int i = 0; i < dictHead.size(); i++)
 	{
 		m_list.InsertColumn(i + 1, dictHead[i], LVCFMT_CENTER, 70);
@@ -490,13 +491,17 @@ void CInfoDlg::OnBnClickedButton8()
 	CInfoImportDlg dlg;
 	dlg.getData(&list_bak, &m_list, stuInfo, subName);
 	dlg.DoModal();
-	CString str;
-	if (dlg.ErrorCount > 0)
+	if (dlg.isOK == 1)
 	{
-		str.Format(_T("%d个学生导入失败！\n原因：学号重复"), dlg.ErrorCount);
-		MessageBox(str, _T("警告"), MB_ICONWARNING);
+		CString str;
+		if (dlg.ErrorCount > 0)
+		{
+			str.Format(_T("%d个学生导入失败！\n原因：学号重复"), dlg.ErrorCount);
+			MessageBox(str, _T("警告"), MB_ICONWARNING);
+		}
+		else
+			MessageBox(_T("导入成功！"), _T("警告"), MB_ICONASTERISK);
 	}
-	else
-		MessageBox(_T("导入成功！"), _T("警告"), MB_ICONASTERISK);
+	
 	OnBnClickedButton7();
 }

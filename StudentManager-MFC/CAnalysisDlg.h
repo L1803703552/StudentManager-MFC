@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 
+#include "InfoFile.h"
 
 // CAnalysisDlg 窗体视图
 
@@ -27,6 +28,23 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedButton1();
+private:
+	CComboBox m_cbx1;
+	CComboBox m_cbx2;
+	double m_edit1;
+	CStatic m_text1;
+	CStatic m_text2;
+	CStatic m_text3;
+	CListCtrl m_list1;
+	CListCtrl m_list2;
+	CInfoFile file;
+	vector<CString> dictHead;// 表头
+	BOOL isStuInfo(int sel, msg ms, int sel2);
+	BOOL isSubName(int sel, msg ms, int sel2);
+	BOOL AnalysisCmp(int key, int sel);
 };
 
 

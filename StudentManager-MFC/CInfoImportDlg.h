@@ -34,6 +34,7 @@ public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedOk();
+	int isOK;
 	int ErrorCount;
 private:
 	CStatic m_text1;

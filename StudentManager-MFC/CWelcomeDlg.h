@@ -32,7 +32,6 @@ private:
 	CStatic m_text2;
 public:
 	virtual void OnInitialUpdate();
-	afx_msg void OnBnClickedButton1();
 };
 
 
