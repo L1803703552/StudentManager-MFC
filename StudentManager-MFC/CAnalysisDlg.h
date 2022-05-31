@@ -45,6 +45,8 @@ private:
 	BOOL isStuInfo(int sel, msg ms, int sel2);
 	BOOL isSubName(int sel, msg ms, int sel2);
 	BOOL AnalysisCmp(int key, int sel);
+public:
+	afx_msg void OnLvnColumnclickList1(NMHDR* pNMHDR, LRESULT* pResult);
 };
 
 

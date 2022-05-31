@@ -5,6 +5,8 @@
 #include "StudentManager-MFC.h"
 #include "CAnalysisDlg.h"
 
+int sort_columnAnal; // 记录点击的列
+bool methodAnal = true; // 记录比较方法
 
 // CAnalysisDlg
 
@@ -36,6 +38,7 @@ void CAnalysisDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAnalysisDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CAnalysisDlg::OnBnClickedButton1)
+	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CAnalysisDlg::OnLvnColumnclickList1)
 END_MESSAGE_MAP()
 
 
@@ -288,4 +291,57 @@ BOOL CAnalysisDlg::AnalysisCmp(int key, int sel)
 		return key != m_edit1;
 	break; 
 	}
+}
+
+static int CALLBACK MyCompareProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+{
+	// 从参数中提取所需比较lc的两行数据
+	int row1 = (int)lParam1;
+	int row2 = (int)lParam2;
+	CListCtrl* lc = (CListCtrl*)lParamSort;
+	CString lp1 = lc->GetItemText(row1, sort_columnAnal);
+	CString lp2 = lc->GetItemText(row2, sort_columnAnal);
+	// 比较，对不同的列，不同比较，注意记录前一次排序方向，下一次要相反排序
+	if (sort_columnAnal == 1)//sort_columnAnal 表示哪一列,比如这里等于1表示第2列,用CString类型
+	{
+		// 文字型比较
+		if (methodAnal)
+			return lp1.CompareNoCase(lp2);
+		else
+			return lp2.CompareNoCase(lp1);
+	}
+	else if (sort_columnAnal == 6)//第6列用double类型排序
+	{
+		// double 型比较
+		if (methodAnal)
+			return _tstof(lp1) > _tstof(lp2);
+		else
+			return _tstof(lp2) > _tstof(lp1);
+	}
+	else
+	{
+		// int 型比较
+		if (methodAnal)
+			return _ttoi(lp1) - _ttoi(lp2);
+		else
+			return _ttoi(lp2) - _ttoi(lp1);
+
+	}
+	//建议数字类型的转换为int,道理都明白,字符串是一位一位比较大小的
+	return 0;
+
+}
+
+void CAnalysisDlg::OnLvnColumnclickList1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	// TODO:  在此添加控件通知处理程序代码
+	// 点击表头排序
+	sort_columnAnal = pNMLV->iSubItem;//点击的列
+	int count = m_list2.GetItemCount();//m_list是你控件的名字
+	for (int i = 0; i < count; i++)
+		m_list2.SetItemData(i, i); // 每行的比较关键字，此处为列序号（点击的列号），可以设置为其他 比较函数的第一二个参数
+	m_list2.SortItems(MyCompareProc, (DWORD_PTR)&m_list2);//排序 第二个参数是比较函数的第三个参数
+	methodAnal = !methodAnal;
+	*pResult = 0;
 }
