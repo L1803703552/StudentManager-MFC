@@ -199,7 +199,6 @@ void CInfoDlg::OnLvnColumnclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 		m_list.SetItemData(i, i); // 每行的比较关键字，此处为列序号（点击的列号），可以设置为其他 比较函数的第一二个参数
 	m_list.SortItems(MyCompareProc, (DWORD_PTR)&m_list);//排序 第二个参数是比较函数的第三个参数
 	method = !method;
-	autoSave();
 	*pResult = 0;
 }
 
