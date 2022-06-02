@@ -5,6 +5,8 @@
 #include "StudentManager-MFC.h"
 #include "CAnalysisDlg.h"
 
+#define  floors 10.000f
+
 int sort_columnAnal; // 记录点击的列
 bool methodAnal = true; // 记录比较方法
 
@@ -14,7 +16,7 @@ IMPLEMENT_DYNCREATE(CAnalysisDlg, CFormView)
 
 CAnalysisDlg::CAnalysisDlg()
 	: CFormView(DIALOG_ANALYSIS)
-	, m_edit1(0)
+	, m_edit1(0.0)
 {
 
 }
@@ -268,8 +270,9 @@ BOOL CAnalysisDlg::isSubName(int sel, msg ms, int sel2)
 	return AnalysisCmp(key, sel2);
 }
 
-BOOL CAnalysisDlg::AnalysisCmp(int key, int sel)
+BOOL CAnalysisDlg::AnalysisCmp(double key, int sel)
 {
+	key = floor(key * floors + 0.5) / floors;
 	switch (sel)
 	{
 	case 0:

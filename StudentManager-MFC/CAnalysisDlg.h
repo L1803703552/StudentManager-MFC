@@ -44,7 +44,7 @@ private:
 	vector<CString> dictHead;// 表头
 	BOOL isStuInfo(int sel, msg ms, int sel2);
 	BOOL isSubName(int sel, msg ms, int sel2);
-	BOOL AnalysisCmp(int key, int sel);
+	BOOL AnalysisCmp(double key, int sel);
 public:
 	afx_msg void OnLvnColumnclickList1(NMHDR* pNMHDR, LRESULT* pResult);
 };
