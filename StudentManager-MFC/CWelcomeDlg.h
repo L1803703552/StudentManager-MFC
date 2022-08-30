@@ -32,6 +32,8 @@ private:
 	CStatic m_text2;
 public:
 	virtual void OnInitialUpdate();
+private:
+	CStatic m_text3;
 };
 
 

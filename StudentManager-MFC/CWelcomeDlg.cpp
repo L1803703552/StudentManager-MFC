@@ -25,6 +25,7 @@ void CWelcomeDlg::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TEXT, m_statictext);
 	DDX_Control(pDX, IDC_TEXT2, m_text2);
+	DDX_Control(pDX, IDC_TEXT4, m_text3);
 }
 
 BEGIN_MESSAGE_MAP(CWelcomeDlg, CFormView)
@@ -61,5 +62,5 @@ void CWelcomeDlg::OnInitialUpdate()
 	m_statictext.SetFont(&m_font1);
 	m_font2.CreatePointFont(110, _T("黑体"));
 	m_text2.SetFont(&m_font2);
-
+	m_text3.SetFont(&m_font2);
 }
